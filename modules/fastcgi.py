@@ -3,7 +3,7 @@ import logging
 
 name        = "fastcgi"
 description = "FastCGI RCE"
-author      = "Swissky"
+author      = "Unknown"
 
 class exploit():
 
