@@ -47,6 +47,7 @@ Feel free to add any feature listed below or a new service.
 - networkscan - same a portscan, we want to discover machines in the same network
 - aws and other cloud providers - extract sensitive data from http://169.254.169.254/latest/meta-data/iam/security-credentials/dummy and more
 - sockserver  - SSRF SOCK proxy server - https://github.com/iamultra/ssrfsocks
+- handle request with file in requester
 
 The following code is a template if you wish to add a module interacting with a service.
 

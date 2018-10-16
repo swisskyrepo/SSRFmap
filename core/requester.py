@@ -1,4 +1,5 @@
 import re
+import json
 import requests
 import logging
     
@@ -37,10 +38,17 @@ class Requester(object):
 
     def data_to_dict(self, data):
         if self.method == "POST":
-            for arg in data.split("&"):
-                regex = re.compile('(.*)=(.*)')
-                for name,value in regex.findall(arg):
-                    self.data[name] = value
+
+            # Handle JSON data
+            if self.headers['Content-Type'] and self.headers['Content-Type'] == "application/json":
+                self.data = json.loads(data)
+
+            # Handle FORM data
+            else:
+                for arg in data.split("&"):
+                    regex = re.compile('(.*)=(.*)')
+                    for name,value in regex.findall(arg):
+                        self.data[name] = value
 
 
     def do_request(self, param, value):
@@ -51,12 +59,24 @@ class Requester(object):
                 if param in data_injected:
                     data_injected[param] = value
             
-                    r = requests.post(
-                        "http://" + self.host + self.action, 
-                        headers=self.headers, 
-                        data=data_injected,
-                        timeout=3
-                    )
+
+                    # Handle JSON data
+                    if self.headers['Content-Type'] and self.headers['Content-Type'] == "application/json":
+                        r = requests.post(
+                            "http://" + self.host + self.action, 
+                            headers=self.headers, 
+                            json=data_injected,
+                            timeout=3
+                        )
+
+                    # Handle FORM data
+                    else:
+                        r = requests.post(
+                            "http://" + self.host + self.action, 
+                            headers=self.headers, 
+                            data=data_injected,
+                            timeout=3
+                        )
             else:
                 # String is immutable, we don't have to do a "forced" copy
                 regex = re.compile(param+"=(\w+)")
