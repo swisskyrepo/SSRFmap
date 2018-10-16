@@ -1,6 +1,8 @@
 # SSRFmap
 
-> Server Side Request Forgery or SSRF is a vulnerability in which an attacker forces a server to perform requests on their behalf. It's often used to leverage actions on other services, this framework aims to find and exploit these services easily. SSRFmap takes a Burp request file as input and a parameter to fuzz.
+SSRF are often used to leverage actions on other services, this framework aims to find and exploit these services easily. SSRFmap takes a Burp request file as input and a parameter to fuzz.
+
+> Server Side Request Forgery or SSRF is a vulnerability in which an attacker forces a server to perform requests on their behalf.
 
 ## Guide / RTFM
 
@@ -37,6 +39,18 @@ A quick way to test the framework can be done with `data/example.py` SSRF servic
 FLASK_APP=data/example.py flask run &
 python ssrfmap.py -r data/request.txt -p url -m readfiles
 ```
+
+## Modules
+
+The following modules are already implemented and can be used with the `-m` argument.
+
+| Name           | Description    |
+| :------------- | :------------- |
+| `fastcgi`      | FastCGI RCE |
+| `redis`        | Redis RCE |
+| `github`       | Github Enterprise RCE < 2.8.7 |
+| `portscan`     | Scan ports for the host |
+| `readfiles`    | Read files such as `/etc/passwd` |
 
 ## Contribute
 
