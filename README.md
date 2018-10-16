@@ -49,7 +49,11 @@ The following modules are already implemented and can be used with the `-m` argu
 | `fastcgi`      | FastCGI RCE |
 | `redis`        | Redis RCE |
 | `github`       | Github Enterprise RCE < 2.8.7 |
+| `zaddix`        | Zaddix RCE |
+| `mysql`        | MySQL Command execution |
+| `smtp`        | SMTP send mail |
 | `portscan`     | Scan ports for the host |
+| `networkscan`    | HTTP Ping sweep over the network |
 | `readfiles`    | Read files such as `/etc/passwd` |
 
 ## Contribute
@@ -58,7 +62,6 @@ I <3 pull requests :)
 Feel free to add any feature listed below or a new service.
 
 - --level arg - ability to tweak payloads in order to bypass some IDS/WAF. E.g: `127.0.0.1 -> [::] -> 0000: -> ...`
-- networkscan - same a portscan, we want to discover machines in the same network
 - aws and other cloud providers - extract sensitive data from http://169.254.169.254/latest/meta-data/iam/security-credentials/dummy and more
 - sockserver  - SSRF SOCK proxy server - https://github.com/iamultra/ssrfsocks
 - handle request with file in requester
