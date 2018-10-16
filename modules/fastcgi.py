@@ -1,9 +1,10 @@
 from core.utils import *
 import logging
 
-name        = "fastcgi"
-description = "FastCGI RCE"
-author      = "Unknown"
+name          = "fastcgi"
+description   = "FastCGI RCE"
+author        = "Unknown"
+documentation = []
 
 class exploit():
 

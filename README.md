@@ -72,9 +72,10 @@ The following code is a template if you wish to add a module interacting with a 
 from core.utils import *
 import logging
 
-name        = "servicename in lowercase"
-description = "ServiceName RCE - What does it do"
-author      = "Name or pseudo of the author"
+name          = "servicename in lowercase"
+description   = "ServiceName RCE - What does it do"
+author        = "Name or pseudo of the author"
+documentation = ["http://link_to_a_research", "http://another_link"]
 
 class exploit():
 

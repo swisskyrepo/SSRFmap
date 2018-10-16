@@ -4,6 +4,10 @@ import logging
 name        = "redis"
 description = "Redis RCE - Crontab reverse shell"
 author      = "Swissky"
+documentation = [
+    "https://maxchadwick.xyz/blog/ssrf-exploits-against-redis",
+    "http://vinc.top/2016/11/24/server-side-request-forgery/"
+    ]
 
 class exploit():
 

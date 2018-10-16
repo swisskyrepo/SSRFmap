@@ -2,11 +2,13 @@ from core.utils import *
 import urllib.parse
 import logging
 
-name        = "github"
-description = "Github Enterprise RCE < 2.8.7"
-author      = "Orange"
-# from : https://www.exploit-db.com/exploits/42392/
-# https://blog.orange.tw/2017/07/how-i-chained-4-vulnerabilities-on.html
+name          = "github"
+description   = "Github Enterprise RCE < 2.8.7"
+author        = "Orange"
+documentation = [
+    "https://www.exploit-db.com/exploits/42392/",
+    "https://blog.orange.tw/2017/07/how-i-chained-4-vulnerabilities-on.html"
+]
 
 class exploit():
 

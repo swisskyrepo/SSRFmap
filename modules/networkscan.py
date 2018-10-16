@@ -4,9 +4,10 @@ import sys, struct, socket
 import logging
 import concurrent.futures
 
-name        = "networkscan"
-description = "Scan the network - HTTP Ping sweep"
-author      = "Swissky"
+name          = "networkscan"
+description   = "Scan the network - HTTP Ping sweep"
+author        = "Swissky"
+documentation = []
 
 class exploit():
     ips = set()

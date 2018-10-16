@@ -1,9 +1,10 @@
 from core.utils import *
 import logging
 
-name        = "readfiles"
-description = "Read files from the target"
-author      = "Swissky"
+name          = "readfiles"
+description   = "Read files from the target"
+author        = "Swissky"
+documentation = []
 
 class exploit():
     files = ["/etc/passwd", "/etc/lsb-release", "/etc/shadow", "/etc/hosts"]

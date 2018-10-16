@@ -3,9 +3,10 @@ from datetime import datetime
 import logging
 import concurrent.futures
 
-name        = "portscan"
-description = "Scan ports of the target"
-author      = "Swissky"
+name          = "portscan"
+description   = "Scan ports of the target"
+author        = "Swissky"
+documentation = []
 
 class exploit():
 

@@ -2,9 +2,10 @@ from core.utils import *
 import urllib.parse as urllib
 import logging
 
-name        = "smtp"
-description = "Send a mail via SMTP"
-author      = "Swissky"
+name          = "smtp"
+description   = "Send a mail via SMTP"
+author        = "Swissky"
+documentation = []
 
 class exploit():
     mailto   = "admin@example.com"
@@ -14,6 +15,8 @@ class exploit():
 
 
     def __init__(self, requester, args):
+        self.mailto = input("[MAILTO] Give a mail (e.g: hacker@example.com): ")
+
         ip = "127.0.0.1"
         port = 25
         commands = [
