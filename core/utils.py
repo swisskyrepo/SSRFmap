@@ -103,9 +103,9 @@ def ip_enclosed_alphanumeric(ips, ip):
     intab   = "1234567890abcdefghijklmnopqrstuvwxyz"
 
     if ip == "127.0.0.1":
-        ips.add("ⓛⓞⓒⓐⓛⓣⓔⓢⓣ.ⓜⓔ")
+        ips.add("ⓛⓞⒸⒶⓛⓣⒺⓢⓣ.ⓜⒺ")
 
-    outtab  = "①②③④⑤⑥⑦⑧⑨⓪ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ"
+    outtab  = "①②③④⑤⑥⑦⑧⑨⓪ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ"
     trantab = ip.maketrans(intab, outtab)
     ips.add( ip.translate(trantab) )
 
