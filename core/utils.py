@@ -73,22 +73,26 @@ def ip_dns_redirect(ips, ip):
         ips.add("1ynrnhl.xip.io")
 
 def gen_ip_list(ip, level) :
+    print(level)
     ips = set()
 
-    if level > 1: 
+    if level == 1: 
         ips.add(ip)
 
-    if level > 2:
+    if level == 2:
         ip_default_local(ips, ip)
         ip_default_shortcurt(ips, ip)
 
-    if level > 3:
+    if level == 3:
         ip_dns_redirect(ips, ip)
         ip_default_cidr(ips, ip)
 
-    if level > 4:
+    if level == 4:
         ip_decimal_notation(ips, ip)
         ip_enclosed_alphanumeric(ips, ip)
+
+    # if level == 5:
+    #     more bypass will be added here
 
     for ip in ips:
         yield ip
