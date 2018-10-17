@@ -1,10 +1,18 @@
-# SSRFmap
+# SSRFmap [![Python 3.4+](https://img.shields.io/badge/python-3.4+-blue.svg)](https://www.python.org/downloads/release/python-360/)
 
 SSRF are often used to leverage actions on other services, this framework aims to find and exploit these services easily. SSRFmap takes a Burp request file as input and a parameter to fuzz.
 
 > Server Side Request Forgery or SSRF is a vulnerability in which an attacker forces a server to perform requests on their behalf.
 
 ## Guide / RTFM
+
+Basic install
+
+```powershell
+git clone https://github.com/swisskyrepo/SSRFmap
+cd SSRFmap/
+python3 ssrfmap.py
+```
 
 ```powershell
 usage: ssrfmap.py [-h] [-r REQFILE] [-p PARAM] [-m MODULES] [--lhost LHOST]
