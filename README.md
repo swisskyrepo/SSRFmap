@@ -75,13 +75,8 @@ Feel free to add any feature listed below or a new service.
 - add https://github.com/cujanovic/SSRF-Testing ip.py into the ip generator from core.utils
 
   ```powershell
-  http://425.510.425.510/ Dotted decimal with overflow
-  http://2852039166/ Dotless decimal
-  http://7147006462/ Dotless decimal with overflow
-  http://0xA9.0xFE.0xA9.0xFE/ Dotted hexadecimal
   http://0xA9FEA9FE/ Dotless hexadecimal
   http://0x41414141A9FEA9FE/ Dotless hexadecimal with overflow
-  http://0251.0376.0251.0376/ Dotted octal
   http://0251.00376.000251.0000376/ Dotted octal with padding
   ```
 
@@ -133,7 +128,7 @@ You can also contribute with a beer IRL or with `buymeacoffee.com`
 
 ## Thanks to the contributors
 
-- ???
+- [ttffdd](https://github.com/ttffdd)
 
 ## Inspired by
 
