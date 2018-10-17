@@ -17,7 +17,7 @@ class Requester(object):
                 content = f.read().strip()
         except IOError as e:
             logging.error("File not found")
-            return
+            exit()
 
         try:
             # Parse method and action URI

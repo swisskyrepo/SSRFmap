@@ -25,6 +25,12 @@ def ssrf2():
     content = command("curl {}".format(data.get('url')))
     return content
 
+# curl -v "http://127.0.0.1:5000/ssrf3?url=ssrf" 
+@app.route("/ssrf3", methods=['GET'])
+def ssrf3():
+    data = request.values
+    content = command("curl {}".format(data.get('url')))
+    return content
 
 def command(cmd):
 	proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
@@ -33,5 +39,6 @@ def command(cmd):
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
+
 # FLASK_APP=example.py flask run
 # NOTE: this file should become a simple ssrf example in order to test SSRFmap
