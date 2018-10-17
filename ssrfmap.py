@@ -24,6 +24,7 @@ def parse_args():
     parser.add_argument('-l', action ='store', dest='handler', help="Start an handler for a reverse shell")
     parser.add_argument('--lhost', action ='store', dest='lhost',   help="LHOST reverse shell")
     parser.add_argument('--lport', action ='store', dest='lport',   help="LPORT reverse shell")
+    parser.add_argument('--level', action ='store', dest='level',   help="Level of test to perform (1-5, default: 1)", nargs='?', const=1, default=1, type=int)
     results = parser.parse_args() 
     
     if results.reqfile == None:

