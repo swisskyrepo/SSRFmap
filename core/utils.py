@@ -25,7 +25,6 @@ def diff_text(text1, text2):
     return diff
 
 def ip_default_local(ips, ip):
-    ips.add(ip)
     ips.add("127.0.0.1")
     ips.add("0.0.0.0")
     ips.add("localhost")
@@ -75,15 +74,16 @@ def ip_dns_redirect(ips, ip):
 
 def gen_ip_list(ip, level) :
     ips = set()
-    ip_default_local(ips, ip)
 
     if level > 1: 
-        ip_default_shortcurt(ips, ip)
+        ips.add(ip)
 
     if level > 2:
-        ip_dns_redirect(ips, ip)
+        ip_default_local(ips, ip)
+        ip_default_shortcurt(ips, ip)
 
     if level > 3:
+        ip_dns_redirect(ips, ip)
         ip_default_cidr(ips, ip)
 
     if level > 4:

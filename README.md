@@ -6,17 +6,14 @@ SSRF are often used to leverage actions on other services, this framework aims t
 
 ## Guide / RTFM
 
-Basic install
+Basic install from the Github repository.
 
 ```powershell
 git clone https://github.com/swisskyrepo/SSRFmap
 cd SSRFmap/
 python3 ssrfmap.py
-```
 
-```powershell
-usage: ssrfmap.py [-h] [-r REQFILE] [-p PARAM] [-m MODULES] [--lhost LHOST]
-                  [--lport LPORT]
+usage: ssrfmap.py [-h] [-r REQFILE] [-p PARAM] [-m MODULES] [--lhost LHOST] [--lport LPORT] [--level LEVEL]
 
 optional arguments:
   -h, --help     show this help message and exit
@@ -74,6 +71,18 @@ Feel free to add any feature listed below or a new service.
 - aws and other cloud providers - extract sensitive data from http://169.254.169.254/latest/meta-data/iam/security-credentials/dummy and more
 - sockserver  - SSRF SOCK proxy server - https://github.com/iamultra/ssrfsocks
 - handle request with file in requester
+- add https://github.com/cujanovic/SSRF-Testing ip.py into the ip generator from core.utils
+
+  ```powershell
+  http://425.510.425.510/ Dotted decimal with overflow
+  http://2852039166/ Dotless decimal
+  http://7147006462/ Dotless decimal with overflow
+  http://0xA9.0xFE.0xA9.0xFE/ Dotted hexadecimal
+  http://0xA9FEA9FE/ Dotless hexadecimal
+  http://0x41414141A9FEA9FE/ Dotless hexadecimal with overflow
+  http://0251.0376.0251.0376/ Dotted octal
+  http://0251.00376.000251.0000376/ Dotted octal with padding
+  ```
 
 The following code is a template if you wish to add a module interacting with a service.
 
@@ -131,3 +140,4 @@ You can also contribute with a beer IRL or with `buymeacoffee.com`
 - [How I Chained 4 vulnerabilities on GitHub Enterprise, From SSRF Execution Chain to RCE! - Orange Tsai](https://blog.orange.tw/2017/07/how-i-chained-4-vulnerabilities-on.html)
 - [Blog on Gopherus Tool  -SpyD3r](https://spyclub.tech/2018/blog-on-gopherus/)
 - [Gopherus - Github](https://github.com/tarunkant/Gopherus)
+- [SSRF testing - cujanovic](https://github.com/cujanovic/SSRF-Testing)
