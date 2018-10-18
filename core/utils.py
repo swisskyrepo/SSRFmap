@@ -5,6 +5,9 @@ import string
 def wrapper_file(data):
     return "file://{}".format(data)
 
+def wrapper_unc(data, ip):
+    return "\\\\{}\\{}".format(ip, data)
+    
 def wrapper_gopher(data, ip, port):
     return "gopher://{}:{}/_{}".format(ip, port, data)
 
@@ -16,6 +19,7 @@ def wrapper_http(data, ip, port):
 
 def wrapper_https(data, ip, port):
     return "http://{}:{}/{}".format(ip, port, data)
+
 
 def diff_text(text1, text2):
     diff = ""

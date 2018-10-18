@@ -5,7 +5,7 @@ from urllib.request import urlopen
 import logging
 import binascii
 
-# Note
+# NOTE
 # Due to the nature of SSRF vulnerabilities, 
 # only one response is made from a request.
 # You can get an interactive shell either..

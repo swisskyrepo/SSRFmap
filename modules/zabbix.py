@@ -2,7 +2,7 @@ from core.utils import *
 import logging
 import urllib.parse as urllib
 
-# Note
+# NOTE
 # Require `EnableRemoteCommands = 1` on the Zabbix service
 
 name          = "zabbix"

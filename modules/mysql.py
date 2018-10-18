@@ -2,7 +2,7 @@ from core.utils import *
 import logging
 import binascii
 
-# Note
+# NOTE
 # This exploit is a Python 3 version of the Gopherus tool
 
 name        = "mysql"

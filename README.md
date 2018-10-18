@@ -56,12 +56,14 @@ The following modules are already implemented and can be used with the `-m` argu
 | `fastcgi`      | FastCGI RCE |
 | `redis`        | Redis RCE |
 | `github`       | Github Enterprise RCE < 2.8.7 |
-| `zaddix`        | Zaddix RCE |
+| `zaddix`       | Zaddix RCE |
 | `mysql`        | MySQL Command execution |
-| `smtp`        | SMTP send mail |
+| `smtp`         | SMTP send mail |
 | `portscan`     | Scan ports for the host |
-| `networkscan`    | HTTP Ping sweep over the network |
+| `networkscan`  | HTTP Ping sweep over the network |
 | `readfiles`    | Read files such as `/etc/passwd` |
+| `socksproxy`   | SOCKS4 Proxy |
+| `smbhash`      | Force an SMB authentication via a UNC Path |
 
 ## Contribute
 
