@@ -2,7 +2,8 @@ import re
 import json
 import requests
 import logging
-    
+import urllib.parse
+
 class Requester(object):
     host   = ""
     method = ""
@@ -80,8 +81,8 @@ class Requester(object):
             else:
                 # String is immutable, we don't have to do a "forced" copy
                 regex = re.compile(param+"=(\w+)")
+                value = urllib.parse.quote(value, safe='')
                 data_injected = re.sub(regex, param+'='+value, self.action)
-
                 r = requests.get(
                     "http://" + self.host + data_injected, 
                     headers=self.headers,
