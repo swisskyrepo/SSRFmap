@@ -71,7 +71,6 @@ I <3 pull requests :)
 Feel free to add any feature listed below or a new service.
 
 - aws and other cloud providers - extract sensitive data from http://169.254.169.254/latest/meta-data/iam/security-credentials/dummy and more
-- sockserver  - SSRF SOCK proxy server - https://github.com/iamultra/ssrfsocks
 - handle request with file in requester
 - requester injection point in file (if param = None, check SSRFMAP in reqFile and replace with the payload)
 - add https://github.com/cujanovic/SSRF-Testing ip.py into the ip generator from core.utils

