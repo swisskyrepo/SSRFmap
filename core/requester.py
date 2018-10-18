@@ -52,7 +52,7 @@ class Requester(object):
                         self.data[name] = value
 
 
-    def do_request(self, param, value):
+    def do_request(self, param, value, timeout=3, stream=False):
         try:
             if self.method == "POST":
                 # Copying data to avoid multiple variables edit
@@ -67,7 +67,8 @@ class Requester(object):
                             "http://" + self.host + self.action, 
                             headers=self.headers, 
                             json=data_injected,
-                            timeout=3
+                            timeout=timeout,
+                            stream=stream
                         )
 
                     # Handle FORM data
@@ -76,7 +77,8 @@ class Requester(object):
                             "http://" + self.host + self.action, 
                             headers=self.headers, 
                             data=data_injected,
-                            timeout=3
+                            timeout=timeout,
+                            stream=stream
                         )
             else:
                 # String is immutable, we don't have to do a "forced" copy
@@ -86,7 +88,8 @@ class Requester(object):
                 r = requests.get(
                     "http://" + self.host + data_injected, 
                     headers=self.headers,
-                    timeout=3
+                    timeout=timeout,
+                    stream=stream
                 )
         except Exception as e:
             return None

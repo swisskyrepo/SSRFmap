@@ -58,6 +58,7 @@ The following modules are already implemented and can be used with the `-m` argu
 | `github`       | Github Enterprise RCE < 2.8.7 |
 | `zaddix`       | Zaddix RCE |
 | `mysql`        | MySQL Command execution |
+| `docker`       | Docker Infoleaks via API |
 | `smtp`         | SMTP send mail |
 | `portscan`     | Scan ports for the host |
 | `networkscan`  | HTTP Ping sweep over the network |

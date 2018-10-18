@@ -129,7 +129,6 @@ def ip_dns_redirect(ips, ip):
         ips.add("1ynrnhl.xip.io")
 
 def gen_ip_list(ip, level):
-    print(level)
     ips = set()
 
     if level == 1:
@@ -153,8 +152,6 @@ def gen_ip_list(ip, level):
         ip_dotless_decimal_with_overflow(ips, ip)
         ip_dotted_hexadecimal(ips, ip)
         ip_dotted_octal(ips, ip)
-
-
 
     for ip in ips:
         yield ip
