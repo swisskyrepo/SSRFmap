@@ -9,7 +9,7 @@ name        = "mysql"
 description = "Execute MySQL command < 8.0"
 author      = "Swissky"
 documentation = [
-    "https://spyclub.tech/2018/ssrf-through-gopher/",
+    "https://spyclub.tech/2018/02/05/2018-02-05-ssrf-through-gopher/",
     "https://github.com/eboda/34c3ctf/tree/master/extract0r",
     "https://infosec.rm-it.de/2018/07/29/isitdtu-ctf-2018-friss/",
     "http://shaobaobaoer.cn/archives/643/gopher-8de8ae-ssrf-mysql-a0e7b6"
