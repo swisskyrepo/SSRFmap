@@ -139,6 +139,6 @@ You can also contribute with a beer IRL or with `buymeacoffee.com`
 
 - [All you need to know about SSRF and how may we write tools to do auto-detect - Auxy](https://medium.com/bugbountywriteup/the-design-and-implementation-of-ssrf-attack-framework-550e9fda16ea)
 - [How I Chained 4 vulnerabilities on GitHub Enterprise, From SSRF Execution Chain to RCE! - Orange Tsai](https://blog.orange.tw/2017/07/how-i-chained-4-vulnerabilities-on.html)
-- [Blog on Gopherus Tool  -SpyD3r](https://spyclub.tech/2018/blog-on-gopherus/)
+- [Blog on Gopherus Tool  -SpyD3r](https://spyclub.tech/2018/08/14/2018-08-14-blog-on-gopherus/)
 - [Gopherus - Github](https://github.com/tarunkant/Gopherus)
 - [SSRF testing - cujanovic](https://github.com/cujanovic/SSRF-Testing)
