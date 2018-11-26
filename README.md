@@ -65,6 +65,7 @@ The following modules are already implemented and can be used with the `-m` argu
 | `readfiles`    | Read files such as `/etc/passwd` |
 | `alibaba`      | Read files from the provider (e.g: meta-data, user-data) |
 | `aws`          | Read files from the provider (e.g: meta-data, user-data) |
+| `gce`          | Read files from the provider (e.g: meta-data, user-data) |
 | `digitalocean` | Read files from the provider (e.g: meta-data, user-data) |
 | `socksproxy`   | SOCKS4 Proxy |
 | `smbhash`      | Force an SMB authentication via a UNC Path |
