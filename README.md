@@ -69,6 +69,7 @@ The following modules are already implemented and can be used with the `-m` argu
 | `digitalocean` | Read files from the provider (e.g: meta-data, user-data) |
 | `socksproxy`   | SOCKS4 Proxy |
 | `smbhash`      | Force an SMB authentication via a UNC Path |
+| `tomcat`       | Bruteforce attack against Tomcat Manager |
 
 ## Contribute
 

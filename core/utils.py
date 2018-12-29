@@ -14,7 +14,9 @@ def wrapper_gopher(data, ip, port):
 def wrapper_dict(data, ip, port):
     return "dict://{}:{}/{}".format(ip, port, data)
 
-def wrapper_http(data, ip, port):
+def wrapper_http(data, ip, port, usernm=False, passwd=False):
+    if usernm != False and passwd != False:
+        return "http://{}:{}@{}:{}/{}".format(usernm, passwd, ip, port, data)
     return "http://{}:{}/{}".format(ip, port, data)
 
 def wrapper_https(data, ip, port):
