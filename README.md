@@ -11,6 +11,7 @@ Basic install from the Github repository.
 ```powershell
 git clone https://github.com/swisskyrepo/SSRFmap
 cd SSRFmap/
+pip3 install requirements.txt
 python3 ssrfmap.py
 
 usage: ssrfmap.py [-h] [-r REQFILE] [-p PARAM] [-m MODULES] [--lhost LHOST] [--lport LPORT] [--level LEVEL]
