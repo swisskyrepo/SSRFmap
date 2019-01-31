@@ -19,7 +19,7 @@ def ssrf():
     content = command("curl {}".format(data.get('url')))
     return content
 
-# curl -i -H "Content-Type: application/json" -X POST -d '{"url": "http://example.com"}' http://localhost:5000/ssrf
+# curl -i -H "Content-Type: application/json" -X POST -d '{"url": "http://example.com"}' http://localhost:5000/ssrf2
 @app.route("/ssrf2", methods=['POST'])
 def ssrf2():
     data = request.json
@@ -28,7 +28,7 @@ def ssrf2():
     content = command("curl {}".format(data.get('url')))
     return content
 
-# curl -v "http://127.0.0.1:5000/ssrf3?url=ssrf" 
+# curl -v "http://127.0.0.1:5000/ssrf3?url=http://example.com" 
 @app.route("/ssrf3", methods=['GET'])
 def ssrf3():
     data = request.values
