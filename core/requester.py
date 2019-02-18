@@ -5,13 +5,14 @@ import logging
 import urllib.parse
 
 class Requester(object):
-    host   = ""
-    method = ""
-    action = ""
-    headers = {}
-    data    = {}
+    protocol   = "http"
+    host       = ""
+    method     = ""
+    action     = ""
+    headers    = {}
+    data       = {}
 
-    def __init__(self, path):
+    def __init__(self, path, uagent, ssl):
         try:
             # Read file request
             with open(path, 'r') as f:
@@ -31,11 +32,21 @@ class Requester(object):
                 name, value = header.split(': ')
                 self.headers[name] = value
             self.host = self.headers['Host']
+
+            # Parse user-agent        
+            if uagent != None:
+                self.headers['User-Agent'] = uagent
             
             # Parse data
             self.data_to_dict(content[-1])
+
+            # Handling HTTPS requests
+            if ssl == True:
+                self.protocol   = "https"
+
         except Exception as e:
             logging.warning("Bad Format or Raw data !")
+
 
     def data_to_dict(self, data):
         if self.method == "POST":
@@ -68,21 +79,23 @@ class Requester(object):
                     # Handle JSON data
                     if self.headers['Content-Type'] and self.headers['Content-Type'] == "application/json":
                         r = requests.post(
-                            "http://" + self.host + self.action, 
+                            self.protocol + "://" + self.host + self.action, 
                             headers=self.headers, 
                             json=data_injected,
                             timeout=timeout,
-                            stream=stream
+                            stream=stream,
+                            verify=False
                         )
 
                     # Handle FORM data
                     else:
                         r = requests.post(
-                            "http://" + self.host + self.action, 
+                            self.protocol + "://" + self.host + self.action, 
                             headers=self.headers, 
                             data=data_injected,
                             timeout=timeout,
-                            stream=stream
+                            stream=stream,
+                            verify=False
                         )
                 else:
                     if self.headers['Content-Type'] and self.headers['Content-Type'] == "application/xml":
@@ -93,11 +106,12 @@ class Requester(object):
                             data_xml = data_xml.replace('*FUZZ*', value)
 
                             r = requests.post(
-                                "http://" + self.host + self.action, 
+                                self.protocol + "://" + self.host + self.action, 
                                 headers=self.headers, 
                                 data=data_xml,
                                 timeout=timeout,
-                                stream=stream
+                                stream=stream,
+                                verify=False
                             )                            
                             
                         else:
@@ -109,10 +123,11 @@ class Requester(object):
                 value = urllib.parse.quote(value, safe='')
                 data_injected = re.sub(regex, param+'='+value, self.action)
                 r = requests.get(
-                    "http://" + self.host + data_injected, 
+                    self.protocol + "://" + self.host + data_injected, 
                     headers=self.headers,
                     timeout=timeout,
-                    stream=stream
+                    stream=stream,
+                    verify=False
                 )
         except Exception as e:
             return None

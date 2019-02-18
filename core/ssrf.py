@@ -20,7 +20,7 @@ class SSRF(object):
             handler.start()
         
         # Init a requester
-        self.requester = Requester(args.reqfile)
+        self.requester = Requester(args.reqfile, args.useragent, args.ssl)
 
         # NOTE: if args.param == None, target everything
         if args.param == None:
