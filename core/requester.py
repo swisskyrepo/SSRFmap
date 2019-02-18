@@ -35,7 +35,7 @@ class Requester(object):
             # Parse data
             self.data_to_dict(content[-1])
         except Exception as e:
-            logging.error("Bad Format")
+            logging.warning("Bad Format or Raw data !")
 
     def data_to_dict(self, data):
         if self.method == "POST":
@@ -44,8 +44,13 @@ class Requester(object):
             if self.headers['Content-Type'] and self.headers['Content-Type'] == "application/json":
                 self.data = json.loads(data)
 
+            # Handle XML data
+            elif self.headers['Content-Type'] and self.headers['Content-Type'] == "application/xml":
+                self.data['__xml__'] = data
+
             # Handle FORM data
             else:
+                print(data)
                 for arg in data.split("&"):
                     regex = re.compile('(.*)=(.*)')
                     for name,value in regex.findall(arg):
@@ -60,7 +65,6 @@ class Requester(object):
                 if param in data_injected:
                     data_injected[param] = value
             
-
                     # Handle JSON data
                     if self.headers['Content-Type'] and self.headers['Content-Type'] == "application/json":
                         r = requests.post(
@@ -80,6 +84,25 @@ class Requester(object):
                             timeout=timeout,
                             stream=stream
                         )
+                else:
+                    if self.headers['Content-Type'] and self.headers['Content-Type'] == "application/xml":
+                        if "*FUZZ*" in data_injected['__xml__']:
+
+                            # replace the injection point with the payload
+                            data_xml = data_injected['__xml__']
+                            data_xml = data_xml.replace('*FUZZ*', value)
+
+                            r = requests.post(
+                                "http://" + self.host + self.action, 
+                                headers=self.headers, 
+                                data=data_xml,
+                                timeout=timeout,
+                                stream=stream
+                            )                            
+                            
+                        else:
+                            logging.error("Not injection point found !")
+                            exit(1)   
             else:
                 # String is immutable, we don't have to do a "forced" copy
                 regex = re.compile(param+"=(\w+)")

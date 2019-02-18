@@ -4,6 +4,7 @@
 
 from flask import Flask, abort, request 
 import json
+import re
 import subprocess
 
 app = Flask(__name__)
@@ -34,6 +35,19 @@ def ssrf3():
     data = request.values
     content = command("curl {}".format(data.get('url')))
     return content
+
+# curl -X POST -H "Content-Type: application/xml" -d '<run><log encoding="hexBinary">4142430A</log><result>0</result><url>http://google.com</url></run>' http://127.0.0.1:5000/ssrf4
+@app.route("/ssrf4", methods=['POST'])
+def ssrf4():
+    data = request.data
+    print(data.decode())
+    regex = re.compile("url>(.*?)</url")
+    try:
+        url = regex.findall(data.decode())[0]
+        content = command("curl {}".format(url))
+        return content
+    except Exception as e:
+        return e
 
 def command(cmd):
 	proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)

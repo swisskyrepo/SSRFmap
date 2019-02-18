@@ -1,0 +1,9 @@
+POST /ssrf4 HTTP/1.1
+User-Agent: User-agent
+Host: 127.0.0.1:5000
+Connection: close
+Accept-Encoding: gzip, deflate
+Content-Type: application/xml
+Content-Length: 149
+
+<run><log encoding="hexBinary">4142430A</log><result>0</result><url>*FUZZ*</url></run>
