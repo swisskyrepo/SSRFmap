@@ -61,7 +61,6 @@ class Requester(object):
 
             # Handle FORM data
             else:
-                print(data)
                 for arg in data.split("&"):
                     regex = re.compile('(.*)=(.*)')
                     for name,value in regex.findall(arg):

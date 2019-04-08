@@ -8,7 +8,7 @@ import binascii
 # NOTE
 # Due to the nature of SSRF vulnerabilities, 
 # only one response is made from a request.
-# You can get an interactive shell either..
+# You can't get an interactive shell either..
 
 # $ cat /etc/proxychains.conf 
 # [ProxyList]
