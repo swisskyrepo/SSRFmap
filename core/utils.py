@@ -39,6 +39,8 @@ def ip_default_shortcurt(ips, ip):
     ips.add("[::]")
     ips.add("0000::1")
     ips.add("0")
+    ips.add("127.1")
+    ips.add("127.0.1")
 
 def ip_default_cidr(ips, ip):
     ips.add("127.0.0.0")
