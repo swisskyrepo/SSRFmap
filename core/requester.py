@@ -72,7 +72,8 @@ class Requester(object):
             if self.method == "POST":
                 # Copying data to avoid multiple variables edit
                 data_injected = self.data.copy()
-                if param in data_injected:
+
+                if param in str(data_injected): # Fix for issue/10 : str(data_injected)
                     data_injected[param] = value
             
                     # Handle JSON data
@@ -114,8 +115,11 @@ class Requester(object):
                             )                            
                             
                         else:
-                            logging.error("Not injection point found !")
-                            exit(1)   
+                            logging.error("No injection point found ! (use -p)")
+                            exit(1)  
+                    else:
+                        logging.error("No injection point found ! (use -p)")
+                        exit(1)  
             else:
                 # String is immutable, we don't have to do a "forced" copy
                 regex = re.compile(param+"=(\w+)")
