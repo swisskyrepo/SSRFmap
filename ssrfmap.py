@@ -18,7 +18,11 @@ def display_banner():
     print("                                      |_|    ")
 
 def parse_args():
-    parser = argparse.ArgumentParser()
+    example_text = '''Examples:
+    python ssrfmap.py -r data/request.txt -p url -m redis
+    python ssrfmap.py -r data/request2.txt -m portscan -p url --ssl
+    '''
+    parser = argparse.ArgumentParser(epilog=example_text, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('-r', action ='store', dest='reqfile', help="SSRF Request file")
     parser.add_argument('-p', action ='store', dest='param',   help="SSRF Parameter to target")
     parser.add_argument('-m', action ='store', dest='modules', help="SSRF Modules to enable")
