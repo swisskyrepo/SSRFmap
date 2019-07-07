@@ -20,7 +20,7 @@ def wrapper_http(data, ip, port, usernm=False, passwd=False):
     return "http://{}:{}/{}".format(ip, port, data)
 
 def wrapper_https(data, ip, port):
-    return "http://{}:{}/{}".format(ip, port, data)
+    return "https://{}:{}/{}".format(ip, port, data)
 
 
 def diff_text(text1, text2):
