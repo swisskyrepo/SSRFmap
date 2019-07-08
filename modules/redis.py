@@ -45,8 +45,14 @@ class exploit():
             payload = payload.replace("SERVER_CRON", self.SERVER_CRON)
             payload = payload.replace("LENGTH_PAYLOAD", str(self.LENGTH_PAYLOAD))
 
+            if args.verbose == True:
+                logging.info("Generated payload : {}".format(payload))
+                
             # Send the payload
             r = requester.do_request(args.param, payload)
+
+            if args.verbose == True:
+                logging.info("Module '{}' ended !".format(name))
 
 """
 TODO:

@@ -39,6 +39,7 @@ The following modules are already implemented and can be used with the `-m` argu
 | `smbhash`      | Force an SMB authentication via a UNC Path |
 | `tomcat`       | Bruteforce attack against Tomcat Manager |
 | `custom`       | Send custom data to a listening service, e.g: netcat |
+| `memcache`     | Store data inside the memcache instance |
 
 
 ## Install and Manual
@@ -46,26 +47,27 @@ The following modules are already implemented and can be used with the `-m` argu
 Basic install from the Github repository.
 
 ```powershell
-git clone https://github.com/swisskyrepo/SSRFmap
-cd SSRFmap/
-pip3 install -r requirements.txt
-python3 ssrfmap.py
+$ git clone https://github.com/swisskyrepo/SSRFmap
+$ cd SSRFmap/
+$ pip3 install -r requirements.txt
+$ python3 ssrfmap.py
 
-usage: ssrfmap.py [-h] [-r REQFILE] [-p PARAM] [-m MODULES] [-l HANDLER]
-                  [--lhost LHOST] [--lport LPORT] [--uagent USERAGENT]
-                  [--ssl [SSL]] [--level [LEVEL]]
+  usage: ssrfmap.py [-h] [-r REQFILE] [-p PARAM] [-m MODULES] [-l HANDLER]
+                    [-v [VERBOSE]] [--lhost LHOST] [--lport LPORT]
+                    [--uagent USERAGENT] [--ssl [SSL]] [--level [LEVEL]]
 
-optional arguments:
-  -h, --help          show this help message and exit
-  -r REQFILE          SSRF Request file
-  -p PARAM            SSRF Parameter to target
-  -m MODULES          SSRF Modules to enable
-  -l HANDLER          Start an handler for a reverse shell
-  --lhost LHOST       LHOST reverse shell
-  --lport LPORT       LPORT reverse shell
-  --uagent USERAGENT  User Agent to use
-  --ssl [SSL]         Use HTTPS without verification
-  --level [LEVEL]     Level of test to perform (1-5, default: 1)
+  optional arguments:
+    -h, --help          show this help message and exit
+    -r REQFILE          SSRF Request file
+    -p PARAM            SSRF Parameter to target
+    -m MODULES          SSRF Modules to enable
+    -l HANDLER          Start an handler for a reverse shell
+    -v [VERBOSE]        Enable verbosity
+    --lhost LHOST       LHOST reverse shell
+    --lport LPORT       LPORT reverse shell
+    --uagent USERAGENT  User Agent to use
+    --ssl [SSL]         Use HTTPS without verification
+    --level [LEVEL]     Level of test to perform (1-5, default: 1)
 ```
 
 ## Examples

