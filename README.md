@@ -183,9 +183,7 @@ class exploit():
             r = requester.do_request(args.param, payload)
 ```
 
-You can also contribute with a beer IRL or with `buymeacoffee.com`
-
-[![Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoff.ee/swissky)
+You can also contribute with a beer IRL or via Github Sponsor button.
 
 ### Thanks to the contributors
 
