@@ -1,9 +1,9 @@
-FROM ubuntu
-RUN apt-get update -y && \
-    apt-get install -y python3-pip python3-dev
-COPY ./requirements.txt /requirements.txt
-WORKDIR /
-RUN pip3 install -r requirements.txt
-COPY . /
-ENTRYPOINT [ "python3" ]
-CMD [ "ssrfmap.py" ]
+FROM python:3-alpine3.10
+
+WORKDIR /opt
+
+RUN apk update && apk add git
+RUN git clone https://github.com/swisskyrepo/SSRFmap.git
+RUN cd /opt/SSRFmap && pip install -r requirements.txt
+
+ENTRYPOINT ["python3","/opt/SSRFmap/ssrfmap.py"]
