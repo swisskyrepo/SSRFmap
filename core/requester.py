@@ -52,11 +52,11 @@ class Requester(object):
         if self.method == "POST":
 
             # Handle JSON data
-            if self.headers['Content-Type'] and self.headers['Content-Type'] == "application/json":
+            if self.headers['Content-Type'] and "application/json" in self.headers['Content-Type']:
                 self.data = json.loads(data)
 
             # Handle XML data
-            elif self.headers['Content-Type'] and self.headers['Content-Type'] == "application/xml":
+            elif self.headers['Content-Type'] and "application/xml" in self.headers['Content-Type']:
                 self.data['__xml__'] = data
 
             # Handle FORM data
