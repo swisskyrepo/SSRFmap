@@ -64,6 +64,8 @@ class Requester(object):
                 for arg in data.split("&"):
                     regex = re.compile('(.*)=(.*)')
                     for name,value in regex.findall(arg):
+                        name = urllib.parse.unquote(name)
+                        value = urllib.parse.unquote(value)
                         self.data[name] = value
 
 
