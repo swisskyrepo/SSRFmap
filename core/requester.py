@@ -28,8 +28,10 @@ class Requester(object):
 
             # Parse headers
             content = content.split('\n')
-            for header in content[1:-2]:
-                name, value = header.split(': ')
+            for header in content[1:]:
+                name, _, value = header.partition(': ')
+                if not name or not value:
+                    continue
                 self.headers[name] = value
             self.host = self.headers['Host']
 
