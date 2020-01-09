@@ -16,10 +16,10 @@ class SSRF(object):
         self.load_modules()
 
         # Start a reverse shell handler
-        if args.handler == "1":
+        if args.handler and args.lport and args.handler == "1":
             handler = Handler(args.lport)
             handler.start()
-        else:
+        elif args.handler and args.lport:
             self.load_handler(args.handler)
             handler = self.handler.exploit(args.lport)
             handler.start()
