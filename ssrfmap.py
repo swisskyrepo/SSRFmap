@@ -28,7 +28,7 @@ def parse_args():
     parser.add_argument('-r', action ='store', dest='reqfile', help="SSRF Request file")
     parser.add_argument('-p', action ='store', dest='param',   help="SSRF Parameter to target")
     parser.add_argument('-m', action ='store', dest='modules', help="SSRF Modules to enable")
-    parser.add_argument('-l', action ='store', dest='handler', help="Start an handler for a reverse shell")
+    parser.add_argument('-l', action ='store', dest='handler', help="Start an handler for a reverse shell", nargs='?', const='1')
     parser.add_argument('-v', action ='store', dest='verbose', help="Enable verbosity", nargs='?', const=True)
     parser.add_argument('--lhost', action ='store', dest='lhost',     help="LHOST reverse shell")
     parser.add_argument('--lport', action ='store', dest='lport',     help="LPORT reverse shell")

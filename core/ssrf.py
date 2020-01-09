@@ -7,6 +7,7 @@ import logging
 
 class SSRF(object):
     modules   = set()
+    handler   = None
     requester = None
 
     def __init__(self, args):
@@ -15,10 +16,14 @@ class SSRF(object):
         self.load_modules()
 
         # Start a reverse shell handler
-        if args.handler:
-            handler = Handler(args.handler)
+        if args.handler and args.lport and args.handler == "1":
+            handler = Handler(args.lport)
             handler.start()
-        
+        elif args.handler and args.lport:
+            self.load_handler(args.handler)
+            handler = self.handler.exploit(args.lport)
+            handler.start()
+
         # Init a requester
         self.requester = Requester(args.reqfile, args.useragent, args.ssl)
 
@@ -40,15 +45,8 @@ class SSRF(object):
 
         # Handling a shell
         while args.handler:
-            if handler.connected == True:
-                cmd = input("Shell> $ ")
-                if cmd == "exit":
-                    handler.kill()
-                    print("BYE !")
-                    exit()
-                handler.send_command(cmd+"\n\n")
-            else:
-                time.sleep(5)
+            handler.listen_command()
+            time.sleep(5)
 
     def load_modules(self):
         for index,name in enumerate(os.listdir("./modules")):
@@ -56,3 +54,12 @@ class SSRF(object):
             if ".py" in location:
                 mymodule = SourceFileLoader(name, location).load_module()
                 self.modules.add(mymodule)
+
+    def load_handler(self, name):
+        handler_file = "{}.py".format(name)
+        try:
+            location = os.path.join("./handlers", handler_file)
+            self.handler = SourceFileLoader(handler_file, location).load_module()
+        except Exception as e:
+            logging.error("Invalid no such handler: {}".format(name))
+            exit(1)

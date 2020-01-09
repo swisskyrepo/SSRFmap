@@ -26,6 +26,15 @@ class Handler(threading.Thread):
                 print("\n{}\nShell > $ ".format(response.decode('utf_8', 'ignore').strip()), end='')
                 response = self.client.recv(255)
 
+    def listen_command(self):
+        if self.connected == True:
+            cmd = input("Shell> $ ")
+            if cmd == "exit":
+                self.kill()
+                print("BYE !")
+                exit()
+                self.send_command(cmd+"\n\n")
+
     def send_command(self, cmd):
         self.client.sendall(cmd.encode())
 
