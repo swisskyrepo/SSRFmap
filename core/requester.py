@@ -22,12 +22,12 @@ class Requester(object):
             exit()
 
         try:
+            content = content.split('\n')
             # Parse method and action URI
             regex = re.compile('(.*) (.*) HTTP')
-            self.method, self.action = regex.findall(content)[0]
+            self.method, self.action = regex.findall(content[0])[0]
 
             # Parse headers
-            content = content.split('\n')
             for header in content[1:]:
                 name, _, value = header.partition(': ')
                 if not name or not value:
