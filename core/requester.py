@@ -81,7 +81,7 @@ class Requester(object):
                     data_injected[param] = value
             
                     # Handle JSON data
-                    if self.headers['Content-Type'] and self.headers['Content-Type'] == "application/json":
+                    if self.headers['Content-Type'] and "application/json" in self.headers['Content-Type']:
                         r = requests.post(
                             self.protocol + "://" + self.host + self.action, 
                             headers=self.headers, 
@@ -102,7 +102,7 @@ class Requester(object):
                             verify=False
                         )
                 else:
-                    if self.headers['Content-Type'] and self.headers['Content-Type'] == "application/xml":
+                    if self.headers['Content-Type'] and "application/xml" in self.headers['Content-Type']:
                         if "*FUZZ*" in data_injected['__xml__']:
 
                             # replace the injection point with the payload
