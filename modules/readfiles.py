@@ -3,9 +3,6 @@ import logging
 import os
 from argparse import ArgumentParser
 
-#parser.add_argument("-f", "--file", dest="filename",
-#                    help="write report to FILE", metavar="FILE")
-
 name          = "readfiles"
 description   = "Read files from the target"
 author        = "Swissky"
