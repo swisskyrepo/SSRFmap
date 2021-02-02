@@ -23,6 +23,7 @@ def parse_args():
     python ssrfmap.py -r data/request.txt -p url -m redis
     python ssrfmap.py -r data/request.txt -p url -m portscan --ssl --uagent "SSRFmapAgent"
     python ssrfmap.py -r data/request.txt -p url -m redis --lhost=127.0.0.1 --lport=4242 -l 4242
+    python ssrfmap.py -r data/request.txt -p url -m readfiles --rfiles 
     '''
     parser = argparse.ArgumentParser(epilog=example_text, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('-r', action ='store', dest='reqfile', help="SSRF Request file")
@@ -32,10 +33,11 @@ def parse_args():
     parser.add_argument('-v', action ='store', dest='verbose', help="Enable verbosity", nargs='?', const=True)
     parser.add_argument('--lhost', action ='store', dest='lhost',     help="LHOST reverse shell")
     parser.add_argument('--lport', action ='store', dest='lport',     help="LPORT reverse shell")
+    parser.add_argument('--rfiles', action ='store', dest='targetfiles', help="Files to read with readfiles module", nargs='?', const=True)
     parser.add_argument('--uagent',action ='store', dest='useragent', help="User Agent to use")
     parser.add_argument('--ssl',   action ='store', dest='ssl',       help="Use HTTPS without verification", nargs='?', const=True)
     parser.add_argument('--level', action ='store', dest='level',     help="Level of test to perform (1-5, default: 1)", nargs='?', const=1, default=1, type=int)
-    results = parser.parse_args() 
+    results = parser.parse_args()
     
     if results.reqfile == None:
         parser.print_help()

