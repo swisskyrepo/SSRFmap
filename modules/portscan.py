@@ -23,10 +23,10 @@ class exploit():
         for ip in gen_host:
             # We can use a with statement to ensure threads are cleaned up promptly
             with concurrent.futures.ThreadPoolExecutor(max_workers=None) as executor:
-                future_to_url = {executor.submit(self.concurrent_request, requester, args.param, ip, port): port for port in load_ports}
+                future_to_url = {executor.submit(self.concurrent_request, requester, args.param, ip, port, r): port for port in load_ports}
 
 
-    def concurrent_request(self, requester, param, host, port):
+    def concurrent_request(self, requester, param, host, port, compare):
         try:
             payload = wrapper_http("", host, port.strip())
             r = requester.do_request(param, payload)
@@ -36,7 +36,8 @@ class exploit():
                 timer = datetime.today().time().replace(microsecond=0)
                 port = port.strip() + " "*20
 
-                if r.text != '':
+                # Check if the request is the same
+                if r.text != '' and r.text != compare.text:
                     print("\t[{}] IP:{:12s}, Found \033[32mopen     \033[0m port n°{}".format(timer, host, port))
                 else:
                     print("\t[{}] IP:{:12s}, Found \033[31mfiltered\033[0m  port n°{}".format(timer, host, port))
