@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "levo-ssrfmap"
+version = "0.1.2"
+description = "A packaged version of SSRFmap, for use with Levo.ai's CLI."
+authors = ["Swissky"]
+maintainers = ["Akshath Kothari <akshath.kothari@levo.ai>"]
+packages = [
+    {include = "ssrfmap", from = "src"}
+]
+homepage = "https://levo.ai"
+repository = "https://github.com/levoai/SSRFmap"
+license = "MIT"
+
+[tool.poetry.urls]
+"Levo.ai's CLI" = "https://pypi.org/project/levo/"
+"Parent Repository" = "https://github.com/swisskyrepo/SSRFmap"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.25.1"
+
+[tool.poetry.scripts]
+ssrfmap = "ssrfmap.cli:ssrfmap"
+
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
