@@ -1,53 +1,51 @@
 import importlib
-
-from ssrfmap.core.requester import Requester
-from ssrfmap.core.handler import Handler
-from importlib.machinery import SourceFileLoader
-from pathlib import Path
+import logging
 import os
 import time
-import logging
+from importlib.machinery import SourceFileLoader
+from pathlib import Path
+
+from ssrfmap.core.config import SsrfmapConfig
+from ssrfmap.core.handler import Handler
+from ssrfmap.core.requester import Requester
+
 
 class SSRF(object):
-    modules   = set()
-    handler   = None
+    modules = set()
+    handler = None
     requester = None
 
-    def __init__(self, args):
+    def __init__(self, config: SsrfmapConfig):
 
         # Load modules in memory
         self.load_modules()
 
         # Start a reverse shell handler
-        if args.handler and args.lport and args.handler == "1":
-            handler = Handler(args.lport)
+        if config.handler and config.lport and config.handler == "1":
+            handler = Handler(config.lport)
             handler.start()
-        elif args.handler and args.lport:
-            self.load_handler(args.handler)
-            handler = self.handler.exploit(args.lport)
+        elif config.handler and config.lport:
+            self.load_handler(config.handler)
+            handler = self.handler.exploit(config.lport)
             handler.start()
 
         # Init a requester
-        self.requester = Requester(args.reqfile, args.useragent, args.ssl)
+        self.requester = Requester(config.reqfile, config.useragent, config.ssl)
 
-        # NOTE: if args.param == None, target everything
-        if args.param == None:
+        if config.param is None:
             logging.warning("No parameter (-p) defined, nothing will be tested!")
 
-        # NOTE: if args.modules == None, try everything
-        if args.modules == None:
+        if config.modules is None:
             logging.warning("No modules (-m) defined, everything will be tested!")
             for module in self.modules:
-                module.exploit(self.requester, args)
+                module.exploit(self.requester, config)
         else:
-            for modname in args.modules.split(','):
-                for module in self.modules:
-                    if module.name == modname:
-                        module.exploit(self.requester, args)
-                        break
+            for m in self.modules:
+                if m.name in config.modules:
+                    m.exploit(self.requester, config)
 
         # Handling a shell
-        while args.handler:
+        while config.handler:
             handler.listen_command()
             time.sleep(5)
 

@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from ssrfmap.core.config import SsrfmapConfig
 from ssrfmap.core.ssrf import SSRF
 import argparse
 import logging
@@ -55,4 +56,9 @@ def ssrfmap():
 
     # SSRFmap
     args = parse_args()
-    ssrf = SSRF(args)
+    config = SsrfmapConfig(reqfile=args.reqfile, param=args.param, modules=args.modules.split(','),
+                           handler=args.handler, verbose=args.verbose, lhost=args.lhost, lport=args.lport,
+                           targetfiles=args.targetfiles.split(',') if args.targetfiles else None, useragent=args.useragent, ssl=args.ssl,
+                           level=args.level)
+    print(config)
+    ssrf = SSRF(config)

