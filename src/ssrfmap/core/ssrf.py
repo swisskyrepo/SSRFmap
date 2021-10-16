@@ -11,9 +11,7 @@ from ssrfmap.core.requester import Requester
 
 
 class SSRF(object):
-    modules = set()
-    handler = None
-    requester = None
+    modules: set[object] = set()
 
     def __init__(self, config: SsrfmapConfig):
 
@@ -41,8 +39,8 @@ class SSRF(object):
                 module.exploit(self.requester, config)
         else:
             for m in self.modules:
-                if m.name in config.modules:
-                    m.exploit(self.requester, config)
+                if m.name in config.modules:  # type: ignore
+                    m.exploit(self.requester, config)  # type: ignore
 
         # Handling a shell
         while config.handler:
@@ -50,9 +48,9 @@ class SSRF(object):
             time.sleep(5)
 
     def load_modules(self):
-        modules = Path(Path(__file__).parent.parent, 'modules')
-        for module in modules.glob('[!_]*.py'):
-            module = f'ssrfmap.modules.{module.name[:-3]}'
+        modules = Path(Path(__file__).parent.parent, "modules")
+        for module in modules.glob("[!_]*.py"):
+            module = f"ssrfmap.modules.{module.name[:-3]}"
             self.modules.add(importlib.import_module(module))
 
     def load_handler(self, name):

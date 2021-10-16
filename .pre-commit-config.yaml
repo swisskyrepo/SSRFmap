@@ -1,0 +1,91 @@
+default_language_version:
+  python: python3.9
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        exclude: ^.*\.(md|rst)$
+      - id: debug-statements
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-merge-conflict
+
+  - repo: local
+    hooks:
+      - id: system
+        name: Requirements
+        entry: >
+          sh -c
+          '! poetry export --format=requirements.txt --without-hashes --dev
+          | grep "The lock file is not up to date"'
+        pass_filenames: false
+        language: system
+      - id: removestar
+        name: Remove Star Imports
+        stages: [commit]
+        language: system
+        entry: removestar -i src
+        types: [python]
+
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.16.0
+    hooks:
+      - id: gitlint
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.26.3
+    hooks:
+      - id: yamllint
+
+  - repo: https://github.com/PyCQA/pydocstyle
+    rev: 6.1.1
+    hooks:
+      - id: pydocstyle
+        name: Run pydocstyle
+        additional_dependencies: [toml]
+        args:
+          - --convention=pep257
+          - --add-ignore=D100,D101,D102,D103,D104,D105,D107,D200,D205,D400,D401
+
+  - repo: https://github.com/codingjoe/relint
+    rev: 1.2.1
+    hooks:
+      - id: relint
+
+  - repo: https://github.com/ambv/black
+    rev: 21.9b0
+    hooks:
+      - id: black
+        types: [python]
+
+  - repo: https://github.com/asottile/blacken-docs
+    rev: v1.11.0
+    hooks:
+      - id: blacken-docs
+        additional_dependencies: [black==21.6b0]
+
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: v5.9.3
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+        additional_dependencies: ["isort[pyproject]"]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.910-1
+    hooks:
+      - id: mypy
+        name: Mypy
+        args: ["--ignore-missing-imports"]
+        additional_dependencies: [types-protobuf, types-attrs, types-requests]
+
+  - repo: https://github.com/myint/rstcheck
+    rev: 3f92957
+    hooks:
+      - id: rstcheck
+        additional_dependencies:
+          - sphinx==3.4.2

