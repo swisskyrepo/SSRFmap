@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "levo-ssrfmap"
-version = "0.1.5"
+version = "0.1.6"
 description = "A packaged version of SSRFmap, for use with Levo.ai's CLI."
 authors = ["Swissky"]
 maintainers = ["Akshath Kothari <akshath.kothari@levo.ai>"]

@@ -60,7 +60,7 @@ class Requester(object):
                 self.protocol = "https"
 
         except Exception as e:
-            logging.warning("Bad Format or Raw data!")
+            logging.warning(f"Bad Format or Raw data: {e}")
             exit()
 
     def data_to_dict(self, data):
