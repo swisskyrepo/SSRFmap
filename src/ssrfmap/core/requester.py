@@ -39,7 +39,7 @@ class Requester(object):
             url = urlparse(self.action)
             if url.path != self.action:
                 self.action = url.path
-                self.headers["Host"] = url.hostname
+                self.headers["Host"] = url.netloc
 
             for header in headers:
                 name, _, value = header.partition(": ")
