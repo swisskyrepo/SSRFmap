@@ -126,5 +126,4 @@ def ssrfmap():
         ssl=args.ssl,
         level=args.level,
     )
-    print(config)
     ssrf = SSRF(config)

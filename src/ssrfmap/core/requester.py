@@ -27,13 +27,16 @@ class Requester(object):
             exit()
 
         try:
-            content = content.split("\n")
+            content = content.split("\n\n", 1)
+            request_line = content[0].split("\n", 1)[0]
+            headers = content[0].split("\n")[1:]
+            body = content[1] if len(content) == 2 else None
             # Parse method and action URI
             regex = re.compile("(.*) (.*) HTTP")
-            self.method, self.action = regex.findall(content[0])[0]
+            self.method, self.action = regex.findall(request_line)[0]
 
             # Parse headers
-            for header in content[1:]:
+            for header in headers:
                 name, _, value = header.partition(": ")
                 if not name or not value:
                     continue
@@ -41,20 +44,24 @@ class Requester(object):
             self.host = self.headers["Host"]
 
             # Parse user-agent
-            if uagent != None:
+            if uagent is not None:
                 self.headers["User-Agent"] = uagent
 
             # Parse data
-            self.data_to_dict(content[-1])
+            self.data_to_dict(body)
 
             # Handling HTTPS requests
-            if ssl == True:
+            if ssl:
                 self.protocol = "https"
 
         except Exception as e:
-            logging.warning("Bad Format or Raw data !")
+            logging.warning("Bad Format or Raw data!")
+            exit()
 
     def data_to_dict(self, data):
+        if data is None:
+            return {}
+
         if self.method == "POST":
 
             # Handle JSON data
@@ -113,32 +120,25 @@ class Requester(object):
                             stream=stream,
                             verify=False,
                         )
+                elif (
+                    self.headers["Content-Type"]
+                    and "application/xml" in self.headers["Content-Type"]
+                    and "*FUZZ*" in data_injected["__xml__"]
+                ):
+                    # replace the injection point with the payload
+                    data_xml = data_injected["__xml__"]
+                    data_xml = data_xml.replace("*FUZZ*", value)
+
+                    r = requests.post(
+                        self.protocol + "://" + self.host + self.action,
+                        headers=self.headers,
+                        data=data_xml,
+                        timeout=timeout,
+                        stream=stream,
+                        verify=False,
+                    )
                 else:
-                    if (
-                        self.headers["Content-Type"]
-                        and "application/xml" in self.headers["Content-Type"]
-                    ):
-                        if "*FUZZ*" in data_injected["__xml__"]:
-
-                            # replace the injection point with the payload
-                            data_xml = data_injected["__xml__"]
-                            data_xml = data_xml.replace("*FUZZ*", value)
-
-                            r = requests.post(
-                                self.protocol + "://" + self.host + self.action,
-                                headers=self.headers,
-                                data=data_xml,
-                                timeout=timeout,
-                                stream=stream,
-                                verify=False,
-                            )
-
-                        else:
-                            logging.error("No injection point found ! (use -p)")
-                            exit(1)
-                    else:
-                        logging.error("No injection point found ! (use -p)")
-                        exit(1)
+                    raise Exception("No injection point found.")
             else:
                 # String is immutable, we don't have to do a "forced" copy
                 regex = re.compile(param + "=(\w+)")
@@ -152,7 +152,8 @@ class Requester(object):
                     verify=False,
                 )
         except Exception as e:
-            return None
+            logging.error(e)
+            exit()
         self.interactions.append(
             Interaction.from_requests(
                 r, Status.success if 200 <= r.status_code <= 299 else Status.error, []
