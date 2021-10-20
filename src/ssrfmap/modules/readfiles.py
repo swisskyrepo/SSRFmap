@@ -2,6 +2,8 @@ import logging
 import os
 from argparse import ArgumentParser
 
+from levo_commons.status import Status
+
 from ssrfmap.core.utils import diff_text, wrapper_file
 
 name = "readfiles"
@@ -41,7 +43,7 @@ class exploit:
                 r = requester.do_request(args.param, wrapper_file(f))
                 diff = diff_text(r.text, default)
                 if diff != "":
-
+                    requester.interactions[-1].status = Status.failure
                     # Display diff between default and ssrf request
                     logging.info("\033[32mReading file\033[0m : {}".format(f))
                     logging.debug(diff)

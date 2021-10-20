@@ -4,6 +4,8 @@ import re
 import urllib.parse
 
 import requests
+from levo_commons.models import Interaction
+from levo_commons.status import Status
 
 
 class Requester(object):
@@ -13,6 +15,7 @@ class Requester(object):
     action = ""
     headers: dict[str, str] = {}
     data: dict[str, str] = {}
+    interactions: list[Interaction] = []
 
     def __init__(self, path, uagent, ssl):
         try:
@@ -150,6 +153,11 @@ class Requester(object):
                 )
         except Exception as e:
             return None
+        self.interactions.append(
+            Interaction.from_requests(
+                r, Status.success if 200 <= r.status_code <= 299 else Status.error, []
+            )
+        )
         return r
 
     def __str__(self):

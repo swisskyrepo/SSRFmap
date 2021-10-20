@@ -5,7 +5,3 @@
 - name: IPython debug leftover
   pattern: "IPython\\.embed()"
   filePattern: ".*.py$"
-
-- name: Use relative imports
-  pattern: "^import levo|^from levo"
-  filePattern: "src/.*.py$"
