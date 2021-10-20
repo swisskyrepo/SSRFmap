@@ -2,10 +2,12 @@ import json
 import logging
 import re
 import urllib.parse
+from urllib.parse import urlparse
 
 import requests
 from levo_commons.models import Interaction
 from levo_commons.status import Status
+from requests.structures import CaseInsensitiveDict
 
 
 class Requester(object):
@@ -13,7 +15,7 @@ class Requester(object):
     host = ""
     method = ""
     action = ""
-    headers: dict[str, str] = {}
+    headers: CaseInsensitiveDict = CaseInsensitiveDict()
     data: dict[str, str] = {}
     interactions: list[Interaction] = []
 
@@ -31,11 +33,14 @@ class Requester(object):
             request_line = content[0].split("\n", 1)[0]
             headers = content[0].split("\n")[1:]
             body = content[1] if len(content) == 2 else None
-            # Parse method and action URI
+
             regex = re.compile("(.*) (.*) HTTP")
             self.method, self.action = regex.findall(request_line)[0]
+            url = urlparse(self.action)
+            if url.path != self.action:
+                self.action = url.path
+                self.headers["Host"] = url.hostname
 
-            # Parse headers
             for header in headers:
                 name, _, value = header.partition(": ")
                 if not name or not value:
