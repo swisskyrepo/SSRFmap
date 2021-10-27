@@ -4,6 +4,7 @@ TODO/
 TODO.md
 *.py[cod]
 *$py.class
+.idea/
 
 # C extensions
 *.so
