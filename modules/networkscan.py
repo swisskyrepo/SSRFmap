@@ -13,7 +13,7 @@ class exploit():
     ips = set()
 
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
 
         # concurrent requests in order to limit the time
         self.add_range("192.168.1.0/24")  # Default network 
@@ -50,7 +50,7 @@ class exploit():
         
             if (not "Connection refused" in r.text) and (r.text != compare.text):
                 timer = datetime.today().time().replace(microsecond=0)
-                print("\t[{}] Found host :{}".format(timer, host+ " "*40))
+                print(f"\t[{timer}] Found host :{host+ ' '*40}")
 
             timer = datetime.today().time().replace(microsecond=0)
         except Exception as e:

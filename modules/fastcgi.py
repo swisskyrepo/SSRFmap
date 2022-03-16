@@ -11,7 +11,7 @@ class exploit():
     SERVER_PORT = "4242"
 
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
 
         # Handle args for reverse shell
         if args.lhost == None: self.SERVER_HOST = input("Server Host:")

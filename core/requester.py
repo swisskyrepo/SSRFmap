@@ -137,9 +137,9 @@ class Requester(object):
                     verify=False
                 )
         except Exception as e:
+            logging.error(e)
             return None
         return r
-
 
     def __str__(self):
         text =  self.method + " "

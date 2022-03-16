@@ -15,6 +15,7 @@ class exploit():
 
 
     def __init__(self, requester, args):
+        logging.info(f"Module '{name}' launched !")
         self.mailto = input("[MAILTO] Give a mail (e.g: hacker@example.com): ")
 
         gen_host = gen_ip_list("127.0.0.1", args.level)

