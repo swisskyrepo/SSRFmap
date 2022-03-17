@@ -7,7 +7,7 @@ class Handler(threading.Thread):
 
     def __init__(self, port):
         threading.Thread.__init__(self)
-        logging.info("Handler listening on 0.0.0.0:{}".format(port))
+        logging.info(f"Handler listening on 0.0.0.0:{port}")
         self.connected = False
         self.port = int(port)
 
@@ -18,12 +18,12 @@ class Handler(threading.Thread):
         while True:
             self.socket.listen(5)
             self.client, address = self.socket.accept()
-            print("Handler> New session from {}".format( address[0] ))
+            print(f"Handler> New session from {address[0]}")
             self.connected = True
 
             response = self.client.recv(255)
             while response != b"":
-                print("\n{}\nShell > $ ".format(response.decode('utf_8', 'ignore').strip()), end='')
+                print(f"\n{response.decode('utf_8', 'ignore').strip()}\nShell > $ ", end='')
                 response = self.client.recv(255)
 
     def listen_command(self):

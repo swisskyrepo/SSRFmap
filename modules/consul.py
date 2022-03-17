@@ -16,7 +16,7 @@ documentation = [
 class exploit():
 
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
         gen_host = gen_ip_list("127.0.0.1", args.level)
         port = "8500"
 

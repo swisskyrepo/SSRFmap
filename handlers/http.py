@@ -23,13 +23,13 @@ class exploit(Handler):
         if self.socket._closed or not response:
             break
 
-        logging.info("New session from : \033[32m{}\033[0m".format( address[0] ))
+        logging.info(f"New session from : \033[32m{address[0]}\033[0m")
         self.connected = True
 
         regex = re.compile('(.*) (.*) HTTP')
         request_method, request_action = regex.findall(response)[0]
         request_param = urllib.parse.urlsplit(request_action).query
-        logging.info("Possible injected param: \033[32m{}\033[0m".format( request_param ))
+        logging.info(f"Possible injected param: \033[32m{request_param}\033[0m")
         self.injected_params.append(request_param)
 
         response_header = "HTTP/1.1 200 OK\n"

@@ -11,7 +11,7 @@ class exploit():
     endpoints = set()
 
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
         self.add_endpoints()
 
         r = requester.do_request(args.param, "")
@@ -30,12 +30,12 @@ class exploit():
                 if diff != "":
 
                     # Display diff between default and ssrf request
-                    logging.info("\033[32mReading file\033[0m : {}".format(payload))
+                    logging.info(f"\033[32mReading file\033[0m : {payload}")
                     print(diff)
 
                     # Write diff to a file
                     filename = endpoint[1].split('/')[-1]
-                    logging.info("\033[32mWriting file\033[0m : {} to {}".format(payload, directory + "/" + filename))
+                    logging.info(f"\033[32mWriting file\033[0m : {payload} to {directory + '/' + filename}")
                     with open(directory + "/" + filename, 'w') as f:
                         f.write(diff)
 

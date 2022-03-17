@@ -56,10 +56,10 @@ class SSRF(object):
                 self.modules.add(mymodule)
 
     def load_handler(self, name):
-        handler_file = "{}.py".format(name)
+        handler_file = f"{name}.py"
         try:
             location = os.path.join("./handlers", handler_file)
             self.handler = SourceFileLoader(handler_file, location).load_module()
         except Exception as e:
-            logging.error("Invalid no such handler: {}".format(name))
+            logging.error(f"Invalid no such handler: {name}")
             exit(1)

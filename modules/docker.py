@@ -15,7 +15,7 @@ documentation = []
 class exploit():
 
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
         gen_host = gen_ip_list("127.0.0.1", args.level)
         port = "2375"
 
@@ -33,9 +33,9 @@ class exploit():
                     container_command = container['Command']
 
                     logging.info("Found docker container")
-                    logging.info("\033[32mId\033[0m : {}".format(container_id))
-                    logging.info("\033[32mName\033[0m : {}".format(container_name))
-                    logging.info("\033[32mCommand\033[0m : {}\n".format(container_command))
+                    logging.info(f"\033[32mId\033[0m : {container_id}")
+                    logging.info(f"\033[32mName\033[0m : {container_name}")
+                    logging.info(f"\033[32mCommand\033[0m : {container_command}\n")
 
             # Step 2 - Extract id and name from each image 
             data = "images/json"
@@ -48,7 +48,7 @@ class exploit():
                     container_id      = container['Id']
                     container_name    = container['RepoTags'][0].replace('/','')
 
-                    logging.info("Found docker image n°{}".format(index))
-                    logging.info("\033[32mId\033[0m : {}".format(container_id))
-                    logging.info("\033[32mName\033[0m : {}\n".format(container_name))
+                    logging.info(f"Found docker image n°{index}")
+                    logging.info(f"\033[32mId\033[0m : {container_id}")
+                    logging.info(f"\033[32mName\033[0m : {container_name}\n")
                     images[container_name] = container_id

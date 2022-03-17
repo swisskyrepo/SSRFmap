@@ -3,24 +3,24 @@ import struct
 import string
 
 def wrapper_file(data):
-    return "file://{}".format(data)
+    return f"file://{data}"
 
 def wrapper_unc(data, ip):
-    return "\\\\{}\\{}".format(ip, data)
+    return f"\\\\{ip}\\{data}"
     
 def wrapper_gopher(data, ip, port):
-    return "gopher://{}:{}/_{}".format(ip, port, data)
+    return f"gopher://{ip}:{port}/_{data}"
 
 def wrapper_dict(data, ip, port):
-    return "dict://{}:{}/{}".format(ip, port, data)
+    return f"dict://{data}:{ip}/{port}"
 
 def wrapper_http(data, ip, port, usernm=False, passwd=False):
     if usernm != False and passwd != False:
-        return "http://{}:{}@{}:{}/{}".format(usernm, passwd, ip, port, data)
-    return "http://{}:{}/{}".format(ip, port, data)
+        return f"http://{usernm}:{passwd}@{ip}:{port}/{data}"
+    return f"http://{ip}:{port}/{data}"
 
 def wrapper_https(data, ip, port):
-    return "https://{}:{}/{}".format(ip, port, data)
+    return f"https://{ip}:{port}/{data}"
 
 
 def diff_text(text1, text2):

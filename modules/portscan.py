@@ -11,7 +11,7 @@ documentation = []
 class exploit():
 
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
         r = requester.do_request(args.param, "")
 
         load_ports = ""
@@ -38,18 +38,18 @@ class exploit():
 
                 # Check if the request is the same
                 if r.text != '' and r.text != compare.text:
-                    print("\t[{}] IP:{:12s}, Found \033[32mopen     \033[0m port n°{}".format(timer, host, port))
+                    print(f"\t[{timer}] IP:{host:12s}, Found \033[32mopen     \033[0m port n°{port}")
                 else:
-                    print("\t[{}] IP:{:12s}, Found \033[31mfiltered\033[0m  port n°{}".format(timer, host, port))
+                    print(f"\t[{timer}] IP:{host:12s}, Found \033[31mfiltered\033[0m  port n°{port}")
 
             timer = datetime.today().time().replace(microsecond=0)
             port = port.strip() + " "*20
-            print("\t[{}] Checking port n°{}".format(timer, port), end='\r'),
+            print(f"\t[{timer}] Checking port n°{port}", end='\r'),
         
         # Timeout is a potential port
         except Exception as e:
             print(e)
             timer = datetime.today().time().replace(microsecond=0)
             port = port.strip() + " "*20
-            print("\t[{}] IP:{:212}, \033[33mTimed out\033[0m  port n°{}".format(timer, host, port))
+            print(f"\t[{timer}] IP:{host:212}, \033[33mTimed out\033[0m  port n°{port}")
             pass

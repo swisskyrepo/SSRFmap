@@ -15,7 +15,7 @@ class exploit():
     SERVER_CRON = "/var/lib/redis"
 
     def __init__(self, requester, args):
-        logging.info("Module '{}' launched !".format(name))
+        logging.info(f"Module '{name}' launched !")
 
         # Handle args for reverse shell
         if args.lhost == None: self.SERVER_HOST = input("Server Host:")
@@ -46,13 +46,13 @@ class exploit():
             payload = payload.replace("LENGTH_PAYLOAD", str(self.LENGTH_PAYLOAD))
 
             if args.verbose == True:
-                logging.info("Generated payload : {}".format(payload))
+                logging.info(f"Generated payload : {payload}")
                 
             # Send the payload
             r = requester.do_request(args.param, payload)
 
             if args.verbose == True:
-                logging.info("Module '{}' ended !".format(name))
+                logging.info(f"Module '{name}' ended !")
 
 """
 TODO:
