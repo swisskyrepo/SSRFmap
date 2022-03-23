@@ -67,6 +67,7 @@ $ python3 ssrfmap.py
     --lport LPORT       LPORT reverse shell
     --uagent USERAGENT  User Agent to use
     --ssl [SSL]         Use HTTPS without verification
+    --proxy PROXY       Use HTTP(s) proxy (ex: http://localhost:8080)
     --level [LEVEL]     Level of test to perform (1-5, default: 1)
 ```
 

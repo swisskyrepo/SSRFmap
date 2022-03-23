@@ -12,7 +12,7 @@ class Requester(object):
     headers    = {}
     data       = {}
 
-    def __init__(self, path, uagent, ssl):
+    def __init__(self, path, uagent, ssl, proxies):
         try:
             # Read file request
             with open(path, 'r') as f:
@@ -45,6 +45,8 @@ class Requester(object):
             # Handling HTTPS requests
             if ssl == True:
                 self.protocol   = "https"
+            
+            self.proxies = proxies
 
         except Exception as e:
             logging.warning("Bad Format or Raw data !")
@@ -88,7 +90,8 @@ class Requester(object):
                             json=data_injected,
                             timeout=timeout,
                             stream=stream,
-                            verify=False
+                            verify=False,
+                            proxies=self.proxies
                         )
 
                     # Handle FORM data
@@ -99,7 +102,8 @@ class Requester(object):
                             data=data_injected,
                             timeout=timeout,
                             stream=stream,
-                            verify=False
+                            verify=False,
+                            proxies=self.proxies
                         )
                 else:
                     if self.headers['Content-Type'] and "application/xml" in self.headers['Content-Type']:
@@ -115,7 +119,8 @@ class Requester(object):
                                 data=data_xml,
                                 timeout=timeout,
                                 stream=stream,
-                                verify=False
+                                verify=False,
+                                proxies=self.proxies
                             )                            
                             
                         else:
@@ -134,7 +139,8 @@ class Requester(object):
                     headers=self.headers,
                     timeout=timeout,
                     stream=stream,
-                    verify=False
+                    verify=False,
+                    proxies=self.proxies
                 )
         except Exception as e:
             logging.error(e)

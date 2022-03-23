@@ -34,6 +34,7 @@ def parse_args():
     parser.add_argument('--rfiles', action ='store', dest='targetfiles', help="Files to read with readfiles module", nargs='?', const=True)
     parser.add_argument('--uagent',action ='store', dest='useragent', help="User Agent to use")
     parser.add_argument('--ssl',   action ='store', dest='ssl',       help="Use HTTPS without verification", nargs='?', const=True)
+    parser.add_argument('--proxy',   action ='store', dest='proxy',   help="Use HTTP(s) proxy (ex: http://localhost:8080)")
     parser.add_argument('--level', action ='store', dest='level',     help="Level of test to perform (1-5, default: 1)", nargs='?', const=1, default=1, type=int)
     results = parser.parse_args()
     

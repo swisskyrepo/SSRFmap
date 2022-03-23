@@ -24,8 +24,15 @@ class SSRF(object):
             handler = self.handler.exploit(args.lport)
             handler.start()
 
+        proxies = None
+        if args.proxy:
+            proxies = { 
+                "http"  : args.proxy, 
+                "https" : args.proxy, 
+            }
+
         # Init a requester
-        self.requester = Requester(args.reqfile, args.useragent, args.ssl)
+        self.requester = Requester(args.reqfile, args.useragent, args.ssl, proxies)
 
         # NOTE: if args.param == None, target everything
         if args.param == None:
