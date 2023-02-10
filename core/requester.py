@@ -131,7 +131,7 @@ class Requester(object):
                         exit(1)  
             else:
                 # String is immutable, we don't have to do a "forced" copy
-                regex = re.compile(param+"=(\w+)")
+                regex = re.compile(param+"=([^&]+)")
                 value = urllib.parse.quote(value, safe='')
                 data_injected = re.sub(regex, param+'='+value, self.action)
                 r = requests.get(
