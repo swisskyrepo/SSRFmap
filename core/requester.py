@@ -96,6 +96,7 @@ class Requester(object):
 
                     # Handle FORM data
                     else:
+                        if param == '': data_injected = value
                         r = requests.post(
                             self.protocol + "://" + self.host + self.action, 
                             headers=self.headers, 
