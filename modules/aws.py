@@ -25,6 +25,9 @@ class exploit():
 
             # Create directory to store files
             directory = requester.host
+            # Replace : with _ for window folder name safe
+            # https://www.ibm.com/docs/en/spectrum-archive-sde/2.4.1.0?topic=tips-file-name-characters
+            directory =  directory.replace(':','_')
             if not os.path.exists(directory):
                 os.makedirs(directory)
 
