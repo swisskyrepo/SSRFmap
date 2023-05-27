@@ -26,6 +26,7 @@ The following modules are already implemented and can be used with the `-m` argu
 | `github`       | Github Enterprise RCE < 2.8.7 |
 | `zabbix`       | Zabbix RCE |
 | `mysql`        | MySQL Command execution |
+| `postgres`     | Postgres Command execution |
 | `docker`       | Docker Infoleaks via API |
 | `smtp`         | SMTP send mail |
 | `portscan`     | Scan top 8000 ports for the host |
