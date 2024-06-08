@@ -5,6 +5,7 @@
 from flask import Flask, request 
 import re
 import subprocess
+import urllib.parse
 
 app = Flask(__name__)
 
@@ -39,15 +40,16 @@ def ssrf3():
 @app.route("/ssrf4", methods=['POST'])
 def ssrf4():
     data = request.data
-    print(data.decode())
     regex = re.compile("url>(.*?)</url")
     try:
-        url = regex.findall(data.decode())[0]
+        data = urllib.parse.unquote(data)
+        url = regex.findall(data)[0]
+        print(url)
         content = command(f"curl {url}")
         return content
+    
     except Exception as e:
-        return e
-
+        print(e)
 
 # curl -v "http://127.0.0.1:5000/ssrf5" -H 'X-Custom-Header: http://example.com'
 @app.route("/ssrf5", methods=['GET'])

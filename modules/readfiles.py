@@ -1,7 +1,6 @@
 from core.utils import *
 import logging
 import os
-from argparse import ArgumentParser
 
 name          = "readfiles"
 description   = "Read files from the target"

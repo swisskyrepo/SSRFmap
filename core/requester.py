@@ -103,20 +103,8 @@ class Requester(object):
                             proxies=self.proxies
                         )
 
-                    # Handle FORM data
-                    else:
-                        if param == '': data_injected = value
-                        r = requests.post(
-                            self.protocol + "://" + self.host + self.action, 
-                            headers=header_injected, 
-                            data=data_injected,
-                            timeout=timeout,
-                            stream=stream,
-                            verify=False,
-                            proxies=self.proxies
-                        )
-                else:
-                    if self.headers['Content-Type'] and "application/xml" in self.headers['Content-Type']:
+                    # Handle XML data
+                    elif self.headers['Content-Type'] and "application/xml" in self.headers['Content-Type']:
                         if "*FUZZ*" in data_injected['__xml__']:
 
                             # replace the injection point with the payload
@@ -136,9 +124,23 @@ class Requester(object):
                         else:
                             logging.error("No injection point found ! (use -p)")
                             exit(1)  
+
+                    # Handle FORM data
                     else:
-                        logging.error("No injection point found ! (use -p)")
-                        exit(1)  
+                        if param == '': data_injected = value
+                        r = requests.post(
+                            self.protocol + "://" + self.host + self.action, 
+                            headers=header_injected, 
+                            data=data_injected,
+                            timeout=timeout,
+                            stream=stream,
+                            verify=False,
+                            proxies=self.proxies
+                        )
+
+                else:
+                    logging.error("No injection point found ! (use -p)")
+                    exit(1)  
             else:
                 # String is immutable, we don't have to do a "forced" copy
                 regex = re.compile(param+"=([^&]+)")
