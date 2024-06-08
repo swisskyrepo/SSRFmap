@@ -75,6 +75,15 @@ class Requester(object):
 
     def do_request(self, param, value, timeout=3, stream=False):
         try:
+            # Handle injection in the headers
+            # Copying data to avoid multiple variables edit
+            header_injected = self.headers.copy()
+            if param in self.headers:
+                header_injected[param] = value
+                print('inject in header')
+                print(header_injected)
+
+
             if self.method == "POST":
                 # Copying data to avoid multiple variables edit
                 data_injected = self.data.copy()
@@ -86,7 +95,7 @@ class Requester(object):
                     if self.headers['Content-Type'] and "application/json" in self.headers['Content-Type']:
                         r = requests.post(
                             self.protocol + "://" + self.host + self.action, 
-                            headers=self.headers, 
+                            headers=header_injected, 
                             json=data_injected,
                             timeout=timeout,
                             stream=stream,
@@ -99,7 +108,7 @@ class Requester(object):
                         if param == '': data_injected = value
                         r = requests.post(
                             self.protocol + "://" + self.host + self.action, 
-                            headers=self.headers, 
+                            headers=header_injected, 
                             data=data_injected,
                             timeout=timeout,
                             stream=stream,
@@ -116,7 +125,7 @@ class Requester(object):
 
                             r = requests.post(
                                 self.protocol + "://" + self.host + self.action, 
-                                headers=self.headers, 
+                                headers=header_injected, 
                                 data=data_xml,
                                 timeout=timeout,
                                 stream=stream,
@@ -137,7 +146,7 @@ class Requester(object):
                 data_injected = re.sub(regex, param+'='+value, self.action)
                 r = requests.get(
                     self.protocol + "://" + self.host + data_injected, 
-                    headers=self.headers,
+                    headers=header_injected,
                     timeout=timeout,
                     stream=stream,
                     verify=False,

