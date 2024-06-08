@@ -27,7 +27,7 @@ def parse_args():
     parser.add_argument('-p', action ='store', dest='param',   help="SSRF Parameter to target")
     parser.add_argument('-m', action ='store', dest='modules', help="SSRF Modules to enable")
     parser.add_argument('-l', action ='store', dest='handler', help="Start an handler for a reverse shell", nargs='?', const='1')
-    parser.add_argument('-v', action ='store', dest='verbose', help="Enable verbosity", nargs='?', const=True)
+    parser.add_argument('-v', action ='store_true', dest='verbose', help="Enable verbosity")
     parser.add_argument('--lhost', action ='store', dest='lhost',     help="LHOST reverse shell")
     parser.add_argument('--lport', action ='store', dest='lport',     help="LPORT reverse shell")
     parser.add_argument('--rfiles', action ='store', dest='targetfiles', help="Files to read with readfiles module", nargs='?', const=True)
@@ -57,10 +57,16 @@ if __name__ == "__main__":
         ]
     )
 
-    logging.addLevelName( logging.WARNING, "\033[1;31m%s\033[1;0m" % logging.getLevelName(logging.WARNING))
-    logging.addLevelName( logging.ERROR, "\033[1;41m%s\033[1;0m" % logging.getLevelName(logging.ERROR))
+    logging.addLevelName(logging.WARNING, "\033[1;31m%s\033[1;0m" % logging.getLevelName(logging.WARNING))
+    logging.addLevelName(logging.ERROR, "\033[1;41m%s\033[1;0m" % logging.getLevelName(logging.ERROR))
     display_banner()
 
-    # SSRFmap
+    # handle verbosity
     args = parse_args()
+    if args.verbose is True:
+        logging.getLogger().setLevel(logging.DEBUG)
+        logging.debug("Verbose output is enabled")
+
+    # SSRFmap
     ssrf = SSRF(args)
+

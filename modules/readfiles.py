@@ -47,9 +47,9 @@ class exploit():
                     # Display diff between default and ssrf request
                     logging.info(f"\033[32mReading file\033[0m : {f}")
                     if bytes(diff, encoding='utf-8').startswith(self.file_magic["elf"]):
-                        print("ELF binary found - not printing to stdout")
+                        logging.info("ELF binary found - not printing to stdout")
                     else:
-                        print(diff)
+                        logging.info(diff)
 
                     # Write diff to a file
                     filename = f.replace('\\','_').replace('/','_')
@@ -58,4 +58,4 @@ class exploit():
                         f.write(diff)
 
         else:
-            print("Empty response")
+            logging.info("Empty response")
