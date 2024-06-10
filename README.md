@@ -19,28 +19,29 @@ SSRF are often used to leverage actions on other services, this framework aims t
 
 The following modules are already implemented and can be used with the `-m` argument.
 
-| Name           | Description    |
-| :------------- | :------------- |
-| `fastcgi`      | FastCGI RCE |
-| `redis`        | Redis RCE |
-| `github`       | Github Enterprise RCE < 2.8.7 |
-| `zabbix`       | Zabbix RCE |
-| `mysql`        | MySQL Command execution |
-| `postgres`     | Postgres Command execution |
-| `docker`       | Docker Infoleaks via API |
-| `smtp`         | SMTP send mail |
-| `portscan`     | Scan top 8000 ports for the host |
-| `networkscan`  | HTTP Ping sweep over the network |
-| `readfiles`    | Read files such as `/etc/passwd` |
+| Name           | Description                                              |
+| :------------- | :------------------------------------------------------- |
+| `axfr`         | DNS zone transfers (AXFR)                                |
+| `fastcgi`      | FastCGI RCE                                              |
+| `redis`        | Redis RCE                                                |
+| `github`       | Github Enterprise RCE < 2.8.7                            |
+| `zabbix`       | Zabbix RCE                                               |
+| `mysql`        | MySQL Command execution                                  |
+| `postgres`     | Postgres Command execution                               |
+| `docker`       | Docker Infoleaks via API                                 |
+| `smtp`         | SMTP send mail                                           |
+| `portscan`     | Scan top 8000 ports for the host                         |
+| `networkscan`  | HTTP Ping sweep over the network                         |
+| `readfiles`    | Read files such as `/etc/passwd`                         |
 | `alibaba`      | Read files from the provider (e.g: meta-data, user-data) |
 | `aws`          | Read files from the provider (e.g: meta-data, user-data) |
 | `gce`          | Read files from the provider (e.g: meta-data, user-data) |
 | `digitalocean` | Read files from the provider (e.g: meta-data, user-data) |
-| `socksproxy`   | SOCKS4 Proxy |
-| `smbhash`      | Force an SMB authentication via a UNC Path |
-| `tomcat`       | Bruteforce attack against Tomcat Manager |
-| `custom`       | Send custom data to a listening service, e.g: netcat |
-| `memcache`     | Store data inside the memcache instance |
+| `socksproxy`   | SOCKS4 Proxy                                             |
+| `smbhash`      | Force an SMB authentication via a UNC Path               |
+| `tomcat`       | Bruteforce attack against Tomcat Manager                 |
+| `custom`       | Send custom data to a listening service, e.g: netcat     |
+| `memcache`     | Store data inside the memcache instance                  |
 
 
 ## Install and Manual
@@ -63,8 +64,8 @@ The following modules are already implemented and can be used with the `-m` argu
       -m MODULES          SSRF Modules to enable
       -l HANDLER          Start an handler for a reverse shell
       -v [VERBOSE]        Enable verbosity
-      --lhost LHOST       LHOST reverse shell
-      --lport LPORT       LPORT reverse shell
+      --lhost LHOST       LHOST reverse shell or IP to target in the network
+      --lport LPORT       LPORT reverse shell or port to target in the network
       --uagent USERAGENT  User Agent to use
       --ssl [SSL]         Use HTTPS without verification
       --proxy PROXY       Use HTTP(s) proxy (ex: http://localhost:8080)
@@ -150,7 +151,14 @@ A quick way to test the framework can be done with `data/example.py` SSRF servic
 * Docker
   ```ps1
   docker build --no-cache -t ssrfmap .
+
+  # run example ssrf http service
   docker run -it -v $(pwd):/usr/src/app --name example ssrfmap examples/example.py
+
+  # run example ssrf dns service
+  docker exec -u root:root -it example python examples/ssrf_dns.py
+
+  # run ssrfmap tool
   docker exec -it example python ssrfmap.py -r examples/request.txt -p url -m readfiles
   ```
 
@@ -163,6 +171,8 @@ docker exec -it example python ssrfmap.py -r examples/request3.txt -p url -m rea
 docker exec -it example python ssrfmap.py -r examples/request4.txt -p url -m readfiles --rfiles /etc/issue
 docker exec -it example python ssrfmap.py -r examples/request5.txt -p url -m readfiles --rfiles /etc/issue
 docker exec -it example python ssrfmap.py -r examples/request6.txt -p X-Custom-Header -m readfiles --rfiles /etc/issue
+docker exec -it example python ssrfmap.py -r examples/request.txt -p url -m axfr
+docker exec -it example python ssrfmap.py -r examples/request3.txt -p url -m axfr --lhost 127.0.0.1 --lport 53 --ldomain example.lab
 ```
 
 

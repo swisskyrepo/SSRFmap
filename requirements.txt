@@ -1,2 +1,5 @@
 Flask==3.0.3
 requests==2.31.0
+dnslib==0.9.24
+dnspython==2.6.1
+tldextract==5.1.2
