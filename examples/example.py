@@ -1,11 +1,11 @@
-# NOTE: do not try this at home - highly vulnerable ! (SSRF and RCE)
-# NOTE: this file should become a simple ssrf example in order to test SSRFmap
+# NOTE: Do not try this at home - highly vulnerable ! (SSRF and RCE)
+# NOTE: SSRF examples script
 # FLASK_APP=example.py flask run
 
-from flask import Flask, abort, request 
-import json
+from flask import Flask, request 
 import re
 import subprocess
+import urllib.parse
 
 app = Flask(__name__)
 
@@ -40,14 +40,24 @@ def ssrf3():
 @app.route("/ssrf4", methods=['POST'])
 def ssrf4():
     data = request.data
-    print(data.decode())
     regex = re.compile("url>(.*?)</url")
     try:
-        url = regex.findall(data.decode())[0]
+        data = urllib.parse.unquote(data)
+        url = regex.findall(data)[0]
+        print(url)
         content = command(f"curl {url}")
         return content
+    
     except Exception as e:
-        return e
+        print(e)
+
+# curl -v "http://127.0.0.1:5000/ssrf5" -H 'X-Custom-Header: http://example.com'
+@app.route("/ssrf5", methods=['GET'])
+def ssrf5():
+    data = request.headers.get('X-Custom-Header')
+    content = command(f"curl {data}")
+    return content
+
 
 def command(cmd):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
