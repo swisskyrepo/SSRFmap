@@ -4,6 +4,8 @@ from importlib.machinery import SourceFileLoader
 import os
 import time
 import logging
+from pathlib import Path
+
 
 class SSRF(object):
     modules   = set()
@@ -12,9 +14,12 @@ class SSRF(object):
 
     def __init__(self, args):
 
+        # Set working dir to access all libraries
+        self.change_current_dir()
+
         # Load modules in memory
         self.load_modules()
-
+        
         # Start a reverse shell handler
         if args.handler and args.lport and args.handler == "1":
             handler = Handler(args.lport)
@@ -70,3 +75,10 @@ class SSRF(object):
         except Exception as e:
             logging.error(f"Invalid no such handler: {name}")
             exit(1)
+
+    def change_current_dir(self):
+        try:
+            os.chdir(str(Path(__file__).resolve().parent.parent))
+        except PermissionError:
+            print(logging.error(f"Error : Access to directory {new_directory} denied. Please verify that you have execute access."))
+
