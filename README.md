@@ -153,7 +153,7 @@ A quick way to test the framework can be done with `data/example.py` SSRF servic
   docker build --no-cache -t ssrfmap .
 
   # run example ssrf http service
-  docker run -it -v $(pwd):/usr/src/app --name example ssrfmap examples/example.py
+  docker run -it -v "$(pwd)":/usr/src/app -p 5000:5000 ssrfmap examples/example.py
 
   # run example ssrf dns service
   docker exec -u root:root -it example python examples/ssrf_dns.py
