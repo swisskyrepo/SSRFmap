@@ -3,6 +3,8 @@ from core.ssrf import SSRF
 import argparse
 import logging
 import urllib3
+from pathlib import Path
+import os
 
 def display_banner():
     print(r" _____ _________________                     ") 
@@ -23,8 +25,8 @@ def parse_args():
     python ssrfmap.py -r examples/request.txt -p url -m readfiles --rfiles 
     '''
     parser = argparse.ArgumentParser(epilog=example_text, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('-r', action ='store', dest='reqfile', help="SSRF Request file")
-    parser.add_argument('-p', action ='store', dest='param',   help="SSRF Parameter to target")
+    parser.add_argument('-r', action ='store', dest='reqfile', help="SSRF Request file", required=True)
+    parser.add_argument('-p', action ='store', dest='param',   help="SSRF Parameter to target", required=True)
     parser.add_argument('-m', action ='store', dest='modules', help="SSRF Modules to enable")
     parser.add_argument('-l', action ='store', dest='handler', help="Start an handler for a reverse shell", nargs='?', const='1')
     parser.add_argument('-v', action ='store_true', dest='verbose', help="Enable verbosity")
@@ -36,34 +38,44 @@ def parse_args():
     parser.add_argument('--ssl',   action ='store', dest='ssl',       help="Use HTTPS without verification", nargs='?', const=True)
     parser.add_argument('--proxy',   action ='store', dest='proxy',   help="Use HTTP(s) proxy (ex: http://localhost:8080)")
     parser.add_argument('--level', action ='store', dest='level',     help="Level of test to perform (1-5, default: 1)", nargs='?', const=1, default=1, type=int)
+    parser.add_argument('--logfile', action ='store', dest='logfile', help="SSRFmap Log file")
     results = parser.parse_args()
-    
-    if results.reqfile == None:
-        parser.print_help()
-        exit()
-
     return results
+
 
 if __name__ == "__main__":
     # disable ssl warning for self signed certificate
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    display_banner()
 
+    args = parse_args()
+    args.reqfile = os.path.abspath(args.reqfile)
+
+    # set logfile default location to SSRFmap.log next to ssrfmap.py
+    if args.logfile is None :
+        log_file_path = str(Path(__file__).resolve().parent) + "/SSRFmap.log"
+    else :
+        log_file_path = args.logfile
+    
+    print(f"[INFO] Log file '{log_file_path}'")
     # enable custom logging
-    logging.basicConfig(
-        level=logging.INFO,
-        format="[%(levelname)s]:%(message)s",
-        handlers=[
-            logging.FileHandler("SSRFmap.log", mode='w'),
-            logging.StreamHandler()
-        ]
-    )
+    try :
+        logging.basicConfig(
+            level=logging.INFO,
+            format="[%(levelname)s]:%(message)s",
+            handlers=[
+                logging.FileHandler(log_file_path, mode='w'),
+                logging.StreamHandler()
+            ]
+        )
+    # handle permission denied on logfile
+    except Exception as e:
+        print(f'{e}') 
 
     logging.addLevelName(logging.WARNING, "\033[1;31m%s\033[1;0m" % logging.getLevelName(logging.WARNING))
     logging.addLevelName(logging.ERROR, "\033[1;41m%s\033[1;0m" % logging.getLevelName(logging.ERROR))
-    display_banner()
 
     # handle verbosity
-    args = parse_args()
     if args.verbose is True:
         logging.getLogger().setLevel(logging.DEBUG)
         logging.debug("Verbose output is enabled")
