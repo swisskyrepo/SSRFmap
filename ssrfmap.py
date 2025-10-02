@@ -7,14 +7,14 @@ from pathlib import Path
 import os
 
 def display_banner():
-    print(r" _____ _________________                     ") 
-    print(r"/  ___/  ___| ___ \  ___|                    ")
-    print(r"\ `--.\ `--.| |_/ / |_ _ __ ___   __ _ _ __  ")
-    print(r" `--. \`--. \    /|  _| '_ ` _ \ / _` | '_ \ ")
+    print(r" _____ _________________          ") 
+    print(r"/  ___/  ___| ___ \ ___|          ")
+    print(r"\ `--.\ `--.| |_/ / |_ _ __ ___   __ _ _ __ ")
+    print(r" `--. \`--. \  \/|  _| '_ ` _ \ / _` | '_ \ ")
     print(r"/\__/ /\__/ / |\ \| | | | | | | | (_| | |_) |")
     print(r"\____/\____/\_| \_\_| |_| |_| |_|\__,_| .__/ ")
-    print(r"                                      | |    ")
-    print(r"                                      |_|    ")
+    print(r"                                     | |    ")
+    print(r"                                     |_|    ")
 
 def parse_args():
     example_text = '''Examples:
@@ -39,6 +39,11 @@ def parse_args():
     parser.add_argument('--proxy',   action ='store', dest='proxy',   help="Use HTTP(s) proxy (ex: http://localhost:8080)")
     parser.add_argument('--level', action ='store', dest='level',     help="Level of test to perform (1-5, default: 1)", nargs='?', const=1, default=1, type=int)
     parser.add_argument('--logfile', action ='store', dest='logfile', help="SSRFmap Log file")
+    
+    # === NEW CODE LINE: Add the --protocol-report argument ===
+    parser.add_argument('--protocol-report', action='store_true', help='Print a report of all protocols used in generated payloads.')
+    # =======================================================
+    
     results = parser.parse_args()
     return results
 
@@ -82,4 +87,3 @@ if __name__ == "__main__":
 
     # SSRFmap
     ssrf = SSRF(args)
-

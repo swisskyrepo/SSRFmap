@@ -5,14 +5,18 @@ import logging
 import urllib.parse
 
 class Requester(object):
-    protocol   = "http"
-    host       = ""
-    method     = ""
-    action     = ""
-    headers    = {}
-    data       = {}
+    protocol    = "http"
+    host        = ""
+    method      = ""
+    action      = ""
+    headers     = {}
+    data        = {}
 
-    def __init__(self, path, uagent, ssl, proxies):
+    # === MODIFICATION 1: Update __init__ to accept the protocol_counts dictionary ===
+    def __init__(self, path, uagent, ssl, proxies, protocol_counts):
+        self.protocol_counts = protocol_counts
+    # ===============================================================================
+
         try:
             # Read file request
             with open(path, 'r') as f:
@@ -38,7 +42,7 @@ class Requester(object):
                 self.headers[name] = value
             self.host = self.headers['Host']
 
-            # Parse user-agent        
+            # Parse user-agent         
             if uagent != None:
                 self.headers['User-Agent'] = uagent
             
@@ -78,6 +82,16 @@ class Requester(object):
 
     def do_request(self, param, value, timeout=3, stream=False):
         try:
+            # === MODIFICATION 2: Protocol Tracking Logic ===
+            try:
+                # Payload value will be a URI like 'gopher://...' or 'http://...'
+                protocol_prefix = value.split("://")[0]
+                self.protocol_counts[protocol_prefix] = self.protocol_counts.get(protocol_prefix, 0) + 1
+            except Exception:
+                # Ignore payloads that don't look like URIs (e.g., standard parameter values)
+                pass
+            # ===============================================
+
             # Debug information
             logging.debug(f"Request param: {param}")
             logging.debug(f"Request value: {value}")
@@ -98,7 +112,7 @@ class Requester(object):
 
                 if param in str(data_injected): # Fix for issue/10 : str(data_injected)
                     data_injected[param] = value
-            
+                
                     # Handle JSON data
                     if self.headers['Content-Type'] and "application/json" in self.headers['Content-Type']:
                         logging.debug("Request type: JSON")
@@ -134,11 +148,11 @@ class Requester(object):
                                 stream=stream,
                                 verify=False,
                                 proxies=self.proxies
-                            )                            
+                            )                   
                             
                         else:
                             logging.error("No injection point found ! (use -p)")
-                            exit(1)  
+                            exit(1)     
 
                     # Handle FORM data
                     else:
@@ -160,7 +174,7 @@ class Requester(object):
 
                 else:
                     logging.error("No injection point found ! (use -p)")
-                    exit(1)  
+                    exit(1) 
             else:
                 logging.debug("Request inject: GET parameter")
                 
