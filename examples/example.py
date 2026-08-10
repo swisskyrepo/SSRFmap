@@ -94,6 +94,18 @@ def ssrf8():
     return content
 
 
+# curl -X POST --data-urlencode 'url=SIGNATUREhttp://example.com' http://127.0.0.1:5000/ssrf9
+@app.route("/ssrf9", methods=["POST"])
+def ssrf9():
+    value = request.form.get("url", "")
+    prefix = "SIGNATURE"
+    if not value.startswith(prefix):
+        return "SIGNATURE is missing from url", 400
+    url = value.removeprefix(prefix)
+    content = command(f"curl {url}")
+    return content
+
+
 def command(cmd):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     (out, err) = proc.communicate()

@@ -1,0 +1,9 @@
+POST /ssrf9 HTTP/1.1
+Host: 127.0.0.1:5000
+User-Agent: SSRFmap-POST-Marker-Example
+Accept: */*
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 20
+Connection: close
+
+url=SIGNATURE*FUZZ*
