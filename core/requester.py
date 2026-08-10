@@ -7,6 +7,9 @@ from email.parser import BytesParser
 
 import requests
 
+FUZZ_MARKER = "*FUZZ*"
+BODY_METHODS = {"POST", "PUT"}
+
 
 class Requester:
     def __init__(self, path, uagent, ssl, proxies):
@@ -169,7 +172,10 @@ class Requester:
                 continue
             part_name, value_start, value_end, charset = part
             if part_name == name:
-                replacement = str(value).encode(charset)
+                original = segment[value_start:value_end]
+                marker = FUZZ_MARKER.encode(charset)
+                payload = str(value).encode(charset)
+                replacement = original.replace(marker, payload) if marker in original else payload
                 segments[index] = segment[:value_start] + replacement + segment[value_end:]
                 replaced = True
 
@@ -178,7 +184,7 @@ class Requester:
         return delimiter.join(segments)
 
     def data_to_dict(self, data):
-        if self.method != "POST":
+        if self.method not in BODY_METHODS:
             return
 
         body = data if isinstance(data, bytes) else data.encode()
@@ -192,28 +198,36 @@ class Requester:
         elif self.media_type == "multipart/form-data":
             self.data = self._parse_multipart(body)
         elif self.media_type in {"", "application/x-www-form-urlencoded"}:
-            self.data = dict(urllib.parse.parse_qsl(decoded_body, keep_blank_values=True))
+            self.data = dict(
+                urllib.parse.parse_qsl(decoded_body.rstrip("\r\n"), keep_blank_values=True)
+            )
         else:
             self.data["__raw__"] = decoded_body
 
-    def _post_data(self, param, value):
+    @staticmethod
+    def _inject_value(original, payload):
+        if isinstance(original, str) and FUZZ_MARKER in original:
+            return original.replace(FUZZ_MARKER, str(payload))
+        return payload
+
+    def _body_data(self, param, value):
         if self.media_type == "multipart/form-data":
             return self._replace_multipart_field(param, value)
 
         if self.media_type in {"application/xml", "text/xml"} or self.media_type.endswith("+xml"):
             xml = self.data["__xml__"]
-            if param not in xml or "*FUZZ*" not in xml:
+            if param not in xml or FUZZ_MARKER not in xml:
                 raise ValueError("No XML injection point found! Use *FUZZ* in the target field.")
-            return xml.replace("*FUZZ*", value)
+            return xml.replace(FUZZ_MARKER, value)
 
         if param == "" and "__raw__" in self.data:
-            return value
+            return self._inject_value(self.data["__raw__"], value)
 
         if param not in self.data:
             raise ValueError(f"No injection point found for parameter: {param}")
 
         injected = self.data.copy()
-        injected[param] = value
+        injected[param] = self._inject_value(injected[param], value)
         if self.media_type == "application/json" or self.media_type.endswith("+json"):
             return json.dumps(injected)
         return injected
@@ -230,20 +244,23 @@ class Requester:
                 None,
             )
             if header_name is not None:
-                header_injected[header_name] = value
+                header_injected[header_name] = self._inject_value(
+                    header_injected[header_name], value
+                )
                 logging.debug("Injecting payload in HTTP header")
 
             logging.debug("Request method: %s", self.method)
-            if self.method == "POST":
+            if self.method in BODY_METHODS:
                 if header_name is not None and param not in self.data:
                     data_injected = self.body
                 else:
-                    data_injected = self._post_data(param, value)
+                    data_injected = self._body_data(param, value)
 
                 # Captured Content-Length values become invalid when a payload changes.
                 # Let requests calculate the correct length for the outgoing body.
                 outgoing_headers = self._without_header(header_injected, "Content-Length")
-                return requests.post(
+                request_function = requests.post if self.method == "POST" else requests.put
+                return request_function(
                     self.protocol + "://" + self.host + self.action,
                     headers=outgoing_headers,
                     data=data_injected,
@@ -253,11 +270,31 @@ class Requester:
                     proxies=self.proxies,
                 )
 
+            if self.method != "GET":
+                raise ValueError(f"Unsupported HTTP method: {self.method}")
+
             logging.debug("Injecting payload in GET parameter")
             encoded_value = urllib.parse.quote(value, safe="")
             pattern = re.compile(r"([?&])" + re.escape(param) + r"=([^&]*)")
+
+            def replace_query_value(match):
+                original = match.group(2)
+                encoded_marker = urllib.parse.quote(FUZZ_MARKER, safe="")
+                if FUZZ_MARKER in original:
+                    injected = original.replace(FUZZ_MARKER, encoded_value)
+                elif encoded_marker.lower() in original.lower():
+                    injected = re.sub(
+                        re.escape(encoded_marker),
+                        encoded_value,
+                        original,
+                        flags=re.IGNORECASE,
+                    )
+                else:
+                    injected = encoded_value
+                return f"{match.group(1)}{param}={injected}"
+
             data_injected = pattern.sub(
-                lambda match: f"{match.group(1)}{param}={encoded_value}",
+                replace_query_value,
                 self.action,
             )
             return requests.get(

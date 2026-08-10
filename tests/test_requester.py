@@ -200,6 +200,21 @@ def test_get_request_injects_query_and_header(tmp_path):
     assert request_get.call_args.kwargs["headers"]["X-Target"] == "injected"
 
 
+def test_get_request_replaces_fuzz_marker_without_scrubbing_value_prefix(tmp_path):
+    path = write_request(
+        tmp_path,
+        "GET /fetch?url=test;%2AFUZZ%2A&keep=1 HTTP/1.1\nHost: example.test\n\n",
+    )
+    requester = Requester(path, None, False, None)
+
+    with patch("core.requester.requests.get", return_value=Mock()) as request_get:
+        requester.do_request("url", "http://127.0.0.1/a b")
+
+    assert request_get.call_args.args[0] == (
+        "http://example.test/fetch?url=test;http%3A%2F%2F127.0.0.1%2Fa%20b&keep=1"
+    )
+
+
 def test_form_post_injects_selected_parameter(tmp_path):
     path = write_request(
         tmp_path,
@@ -217,6 +232,28 @@ def test_form_post_injects_selected_parameter(tmp_path):
     assert requester.data == {"url": "old", "keep": "value"}
 
 
+def test_put_form_preserves_context_around_fuzz_marker(tmp_path):
+    path = write_request(
+        tmp_path,
+        "PUT /fetch HTTP/1.1\nHost: example.test\n"
+        "Content-Type: application/x-www-form-urlencoded\nContent-Length: 1\n\n"
+        "url=test%3B*FUZZ*%3Bend&keep=value",
+    )
+    requester = Requester(path, None, False, None)
+    response = Mock()
+
+    with patch("core.requester.requests.put", return_value=response) as request_put:
+        result = requester.do_request("url", "file:///etc/issue")
+
+    assert result is response
+    assert request_put.call_args.kwargs["data"] == {
+        "url": "test;file:///etc/issue;end",
+        "keep": "value",
+    }
+    assert "Content-Length" not in request_put.call_args.kwargs["headers"]
+    assert requester.data["url"] == "test;*FUZZ*;end"
+
+
 def test_json_post_serializes_injected_data(tmp_path):
     path = write_request(
         tmp_path,
@@ -229,6 +266,23 @@ def test_json_post_serializes_injected_data(tmp_path):
         requester.do_request("url", "new")
 
     assert json.loads(request_post.call_args.kwargs["data"]) == {"url": "new"}
+
+
+def test_json_post_replaces_only_fuzz_marker(tmp_path):
+    path = write_request(
+        tmp_path,
+        "POST /fetch HTTP/1.1\nHost: example.test\nContent-Type: application/json\n\n"
+        '{"url": "prefix;*FUZZ*;suffix", "keep": true}',
+    )
+    requester = Requester(path, None, False, None)
+
+    with patch("core.requester.requests.post", return_value=Mock()) as request_post:
+        requester.do_request("url", "file:///etc/issue")
+
+    assert json.loads(request_post.call_args.kwargs["data"]) == {
+        "url": "prefix;file:///etc/issue;suffix",
+        "keep": True,
+    }
 
 
 def test_xml_post_replaces_fuzz_marker(tmp_path):

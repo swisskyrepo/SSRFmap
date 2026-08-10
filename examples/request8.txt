@@ -1,0 +1,9 @@
+PUT /ssrf7 HTTP/1.1
+Host: 127.0.0.1:5000
+User-Agent: SSRFmap-PUT-Example
+Accept: */*
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 24
+Connection: close
+
+url=test%3B*FUZZ*

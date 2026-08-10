@@ -121,11 +121,21 @@ Use the `-m` followed by module name (separated by a `,` if you want to launch s
 uv run python ssrfmap.py -r examples/request.txt -p url -m readfiles,portscan
 ```
 
-If you want to inject inside a header, a GET or a POST parameter, you only need to specify the parameter name
+If you want to inject inside a header, or a GET, POST, or PUT parameter, specify its name:
 
 ```bash
 uv run python ssrfmap.py -r examples/request6.txt -p X-Custom-Header -m readfiles --rfiles /tmp/test
 ```
+
+By default, SSRFmap replaces the selected parameter's complete value. To keep part of the saved
+value, place `*FUZZ*` exactly where the payload should be inserted:
+
+```text
+url=test;*FUZZ*;end
+```
+
+Using `-p url` preserves `test;` and `;end`, replacing only `*FUZZ*` with each payload. The
+marker works in GET parameters, headers, POST or PUT bodies, JSON, XML, and multipart form fields.
 
 If you need to have a custom user-agent use the `--uagent`. Some targets will use HTTPS, you can enable it with `--ssl`.
 
@@ -173,6 +183,9 @@ uv run python ssrfmap.py -r examples/request.txt -p url -m readfiles
 
 # reproduce SSRF when the URL is inside a multipart/form-data body
 uv run python ssrfmap.py -r examples/request7.txt -p url -m readfiles --rfiles /etc/issue
+
+# reproduce a PUT SSRF while preserving the value prefix before *FUZZ*
+uv run python ssrfmap.py -r examples/request8.txt -p url -m readfiles --rfiles /etc/issue
 ```
 
 Retrieved files and cloud metadata are saved under `loot/<target>/`. The `loot/` directory is
@@ -198,6 +211,7 @@ docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request4.
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request5.txt -p url -m readfiles --rfiles /etc/issue
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request6.txt -p X-Custom-Header -m readfiles --rfiles /etc/issue
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request7.txt -p url -m readfiles --rfiles /etc/issue
+docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request8.txt -p url -m readfiles --rfiles /etc/issue
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request.txt -p url -m axfr
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request3.txt -p url -m axfr --lhost 127.0.0.1 --lport 53 --ldomain example.lab
 
