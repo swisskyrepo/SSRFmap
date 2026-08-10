@@ -5,3 +5,4 @@ __pycache__
 .ruff_cache
 .coverage
 SSRFmap.log
+loot

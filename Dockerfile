@@ -16,6 +16,9 @@ RUN cd /tmp/curl-7.71.0 && ./configure --enable-ares && make && make install
 # Install locked runtime dependencies
 RUN uv sync --frozen --no-default-groups
 
+# Downloaded files are written here after privileges are dropped.
+RUN mkdir -p /usr/src/app/loot && chown 1000:1000 /usr/src/app/loot
+
 # Keep uv runtime state in a location writable by the unprivileged user.
 ENV UV_CACHE_DIR=/tmp/uv-cache
 

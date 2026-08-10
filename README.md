@@ -170,15 +170,24 @@ uv run flask --app examples/example.py run &
 
 # run ssrfmap tool
 uv run python ssrfmap.py -r examples/request.txt -p url -m readfiles
+
+# reproduce SSRF when the URL is inside a multipart/form-data body
+uv run python ssrfmap.py -r examples/request7.txt -p url -m readfiles --rfiles /etc/issue
 ```
+
+Retrieved files and cloud metadata are saved under `loot/<target>/`. The `loot/` directory is
+ignored by Git and must not be committed.
 
 ### Docker
 
 ```bash
 docker build -t ssrfmap .
+mkdir -p loot
 
 # Run the example SSRF HTTP service in a named background container.
-docker run --name example --rm -d -p 5000:5000 ssrfmap examples/example.py
+docker run --name example --rm -d -p 5000:5000 \
+  -v "$(pwd)/loot:/usr/src/app/loot" \
+  ssrfmap examples/example.py
 
 # Run SSRFmap's tests in the same container and uv environment.
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request.txt -p url -m readfiles

