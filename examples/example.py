@@ -66,6 +66,16 @@ def ssrf5():
     return content
 
 
+# curl -F 'url=http://example.com' -F 'proof=@README.md' http://127.0.0.1:5000/ssrf6
+@app.route("/ssrf6", methods=["POST"])
+def ssrf6():
+    # Deliberately vulnerable: this endpoint exists only to reproduce SSRF
+    # when the target URL is carried in a multipart/form-data field.
+    url = request.form.get("url")
+    content = command(f"curl {url}")
+    return content
+
+
 def command(cmd):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     (out, err) = proc.communicate()

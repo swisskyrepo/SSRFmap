@@ -1,0 +1,22 @@
+POST /ssrf6 HTTP/1.1
+Host: 127.0.0.1:5000
+User-Agent: SSRFmap-Multipart-Example
+Accept: */*
+Content-Type: multipart/form-data; boundary=----SSRFmapBoundary7
+Content-Length: 404
+Connection: close
+
+------SSRFmapBoundary7
+Content-Disposition: form-data; name="url"
+
+http://example.com
+------SSRFmapBoundary7
+Content-Disposition: form-data; name="description"
+
+Multipart SSRF reproduction
+------SSRFmapBoundary7
+Content-Disposition: form-data; name="proof"; filename="proof.txt"
+Content-Type: text/plain
+
+This file part must remain unchanged when SSRFmap replaces the url field.
+------SSRFmapBoundary7--

@@ -12,6 +12,12 @@ def write_request(tmp_path, content):
     return request_file
 
 
+def write_binary_request(tmp_path, content):
+    request_file = tmp_path / "request.txt"
+    request_file.write_bytes(content)
+    return request_file
+
+
 def test_parses_get_request_and_overrides_user_agent(tmp_path):
     path = write_request(
         tmp_path,
@@ -39,6 +45,96 @@ def test_parses_urlencoded_post_data(tmp_path):
     requester = Requester(path, None, False, None)
 
     assert requester.data == {"url": "https://example.com", "name": "hello world"}
+
+
+def test_parses_headers_and_multiline_body_without_truncation(tmp_path):
+    path = write_binary_request(
+        tmp_path,
+        b"POST /json HTTP/1.1\r\n"
+        b"host: example.test\r\n"
+        b"content-type: application/problem+json; charset=utf-8\r\n"
+        b"X-Long: first\r\n"
+        b"  second\r\n"
+        b"\r\n"
+        b'{\r\n  "url": "old",\r\n  "enabled": true\r\n}',
+    )
+
+    requester = Requester(path, None, False, None)
+
+    assert requester.host == "example.test"
+    assert requester.headers["X-Long"] == "first second"
+    assert requester.data == {"url": "old", "enabled": True}
+
+
+def test_parses_multipart_form_fields_and_file_content(tmp_path):
+    boundary = "----SSRFmapBoundary"
+    body = (
+        f"--{boundary}\r\n"
+        'Content-Disposition: form-data; name="url"\r\n'
+        "\r\n"
+        "http://example.com/old\r\n"
+        f"--{boundary}\r\n"
+        'Content-Disposition: form-data; name="upload"; filename="payload.txt"\r\n'
+        "Content-Type: text/plain\r\n"
+        "\r\n"
+        "first line\r\nsecond line\r\n"
+        f"--{boundary}--\r\n"
+    ).encode()
+    path = write_binary_request(
+        tmp_path,
+        b"POST /upload HTTP/1.1\r\n"
+        b"Host: example.test\r\n"
+        + f'Content-Type: multipart/form-data; boundary="{boundary}"\r\n'.encode()
+        + b"Content-Length: 999\r\n\r\n"
+        + body,
+    )
+
+    requester = Requester(path, None, False, None)
+
+    assert requester.media_type == "multipart/form-data"
+    assert requester.multipart_boundary == boundary
+    assert requester.data == {
+        "url": "http://example.com/old",
+        "upload": "first line\r\nsecond line",
+    }
+    assert requester.body == body
+
+
+def test_multipart_post_replaces_only_target_field_and_preserves_file(tmp_path):
+    boundary = "AaB03x"
+    file_content = b"binary:\x00\xff\r\nstill-the-file"
+    body = (
+        b"--AaB03x\r\n"
+        b'Content-Disposition: form-data; name="url"\r\n\r\n'
+        b"http://example.com/old\r\n"
+        b"--AaB03x\r\n"
+        b'Content-Disposition: form-data; name="upload"; filename="payload.bin"\r\n'
+        b"Content-Type: application/octet-stream\r\n\r\n" + file_content + b"\r\n--AaB03x--\r\n"
+    )
+    path = write_binary_request(
+        tmp_path,
+        b"POST /upload HTTP/1.1\r\n"
+        b"Host: example.test\r\n"
+        b"Content-Type: multipart/form-data; boundary=AaB03x\r\n"
+        + f"Content-Length: {len(body)}\r\n\r\n".encode()
+        + body,
+    )
+    requester = Requester(path, None, False, None)
+    response = Mock()
+
+    with patch("core.requester.requests.post", return_value=response) as request_post:
+        result = requester.do_request("url", "http://169.254.169.254/latest")
+
+    assert result is response
+    sent_body = request_post.call_args.kwargs["data"]
+    sent_headers = request_post.call_args.kwargs["headers"]
+    assert b"http://169.254.169.254/latest" in sent_body
+    assert b"http://example.com/old" not in sent_body
+    assert file_content in sent_body
+    assert sent_body.endswith(b"\r\n--AaB03x--\r\n")
+    assert sent_headers["Content-Type"] == "multipart/form-data; boundary=AaB03x"
+    assert "Content-Length" not in sent_headers
+    assert requester.body == body
 
 
 def test_parses_json_and_xml_post_data(tmp_path):

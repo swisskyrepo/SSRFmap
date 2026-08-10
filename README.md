@@ -12,6 +12,7 @@ SSRF are often used to leverage actions on other services, this framework aims t
 * [Examples](#examples)
 * [SSRFmap - Tests](#ssrfmap-tests)
 * [Contribute](#contribute)
+  * [Roadmap](#roadmap)
   * [Contributors](#thanks-to-the-contributors)
 
 
@@ -187,6 +188,7 @@ docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request3.
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request4.txt -p url -m readfiles --rfiles /etc/issue
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request5.txt -p url -m readfiles --rfiles /etc/issue
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request6.txt -p X-Custom-Header -m readfiles --rfiles /etc/issue
+docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request7.txt -p url -m readfiles --rfiles /etc/issue
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request.txt -p url -m axfr
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request3.txt -p url -m axfr --lhost 127.0.0.1 --lport 53 --ldomain example.lab
 
@@ -198,6 +200,8 @@ docker stop example
 ## Contribute
 
 I :heart: pull requests :)
+
+### Roadmap
 
 Feel free to add any feature listed below or a new service:
 
