@@ -1,15 +1,16 @@
-from core.requester import Requester
-from core.handler import Handler
-from importlib.machinery import SourceFileLoader
+import logging
 import os
 import time
-import logging
+from importlib.machinery import SourceFileLoader
 from pathlib import Path
+
+from core.handler import Handler
+from core.requester import Requester
 
 
 class SSRF(object):
-    modules   = set()
-    handler   = None
+    modules = set()
+    handler = None
     requester = None
 
     def __init__(self, args):
@@ -19,7 +20,7 @@ class SSRF(object):
 
         # Load modules in memory
         self.load_modules()
-        
+
         # Start a reverse shell handler
         if args.handler and args.lport and args.handler == "1":
             handler = Handler(args.lport)
@@ -31,9 +32,9 @@ class SSRF(object):
 
         proxies = None
         if args.proxy:
-            proxies = { 
-                "http"  : args.proxy, 
-                "https" : args.proxy, 
+            proxies = {
+                "http": args.proxy,
+                "https": args.proxy,
             }
 
         # Init a requester
@@ -49,7 +50,7 @@ class SSRF(object):
             for module in self.modules:
                 module.exploit(self.requester, args)
         else:
-            for modname in args.modules.split(','):
+            for modname in args.modules.split(","):
                 for module in self.modules:
                     if module.name == modname:
                         module.exploit(self.requester, args)
@@ -61,7 +62,7 @@ class SSRF(object):
             time.sleep(5)
 
     def load_modules(self):
-        for index,name in enumerate(os.listdir("./modules")):
+        for name in os.listdir("./modules"):
             location = os.path.join("./modules", name)
             if ".py" in location:
                 mymodule = SourceFileLoader(name, location).load_module()
@@ -80,5 +81,8 @@ class SSRF(object):
         try:
             os.chdir(str(Path(__file__).resolve().parent.parent))
         except PermissionError:
-            print(logging.error(f"Error : Access to directory {new_directory} denied. Please verify that you have execute access."))
-
+            project_directory = Path(__file__).resolve().parent.parent
+            logging.error(
+                "Error: access to directory %s denied. Verify execute permissions.",
+                project_directory,
+            )

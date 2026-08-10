@@ -1,5 +1,7 @@
 FROM python:3.12.4-alpine
 
+COPY --from=ghcr.io/astral-sh/uv:0.11.8 /uv /uvx /bin/
+
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 
@@ -11,10 +13,10 @@ RUN cp examples/curl-7.71.0.tar.gz /tmp
 RUN tar -xvf /tmp/curl-7.71.0.tar.gz -C /tmp/
 RUN cd /tmp/curl-7.71.0 && ./configure --enable-ares && make && make install
 
-# Install requirements
-RUN pip install -r requirements.txt
+# Install locked runtime dependencies
+RUN uv sync --frozen --no-default-groups
 
-# Downgrade privileges
-USER 1000
+# Keep uv runtime state in a location writable by the unprivileged user.
+ENV UV_CACHE_DIR=/tmp/uv-cache
 
-ENTRYPOINT ["python3"]
+ENTRYPOINT ["uv", "run", "--no-sync", "python3"]

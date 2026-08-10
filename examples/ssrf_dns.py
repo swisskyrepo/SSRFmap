@@ -2,24 +2,26 @@
 # use this example to test the AXFR module
 # dig @127.0.0.1 -p 53 example.lab AXFR
 
-from dnslib.server import DNSServer, BaseResolver
-from dnslib import RR, QTYPE, RCODE, A
-from dns import resolver
 import threading
+
+from dns import resolver
+from dnslib import QTYPE, RCODE, RR, A
+from dnslib.server import BaseResolver, DNSServer
 
 DOMAINS = {
     "frontend.example.lab.": "10.10.10.10",
     "backend.example.lab.": "10.10.10.11",
     "secret_flag.example.lab.": "10.10.10.12",
-    "test.example.lab.": "10.10.10.12"
+    "test.example.lab.": "10.10.10.12",
 }
+
 
 class LocalDNS(BaseResolver):
     def resolve(self, request, handler):
         reply = request.reply()
         q = request.q
 
-        print('', flush=True)
+        print("", flush=True)
 
         if q.qtype == QTYPE.A and str(q.qname) in DOMAINS:
             reply.add_answer(RR(q.qname, QTYPE.A, rdata=A(DOMAINS[str(q.qname)])))
@@ -39,11 +41,13 @@ class LocalDNS(BaseResolver):
 
         return reply
 
+
 def run_server(protocol):
     print(f"Server is running - {protocol}")
     resolver = LocalDNS()
     server = DNSServer(resolver, address="0.0.0.0", port=53, tcp=(protocol == "TCP"))
     server.start()
+
 
 if __name__ == "__main__":
     threading.Thread(target=run_server, args=("TCP",)).start()

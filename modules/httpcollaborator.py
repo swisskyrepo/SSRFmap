@@ -1,8 +1,9 @@
-from core.utils import *
-from core.handler import Handler
-import re
 import logging
+import re
 import urllib.parse
+
+from core.handler import Handler
+from core.utils import *
 
 """
 Example:
@@ -15,12 +16,13 @@ Use ssh/autossh to established remote tunnel between public and localhost handle
 ```
 """
 
-name          = "httpcollaborator"
-description   = "This module act like burpsuite collaborator through http protocol to detect if target parameters are prone to ssrf"
-author        = "xyzkab"
+name = "httpcollaborator"
+description = "This module act like burpsuite collaborator through http protocol to detect if target parameters are prone to ssrf"
+author = "xyzkab"
 documentation = []
 
-class exploit():
+
+class exploit:
     SERVER_HOST = "127.0.0.1"
     SERVER_PORT = "4242"
 
@@ -28,16 +30,20 @@ class exploit():
         logging.info(f"Module '{name}' launched !")
 
         # Handle args for httpcollaborator
-        if args.lhost == None: self.SERVER_HOST = input("Server Host:")
-        else:                  self.SERVER_HOST = args.lhost
+        if args.lhost == None:
+            self.SERVER_HOST = input("Server Host:")
+        else:
+            self.SERVER_HOST = args.lhost
 
-        if args.lport == None: self.SERVER_PORT = input("Server Port:")
-        else:                  self.SERVER_PORT = args.lport
+        if args.lport == None:
+            self.SERVER_PORT = input("Server Port:")
+        else:
+            self.SERVER_PORT = args.lport
 
         params = args.param.split(",")
         for param in params:
             logging.info(f"Testing PARAM: {param}")
-            payload = wrapper_http(f"?{param}", args.lhost, args.lport.strip() )
+            payload = wrapper_http(f"?{param}", args.lhost, args.lport.strip())
             r = requester.do_request(param, payload)
 
         logging.info(f"Module '{name}' finished !")
