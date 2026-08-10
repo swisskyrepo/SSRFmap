@@ -1,0 +1,9 @@
+PUT /ssrf8 HTTP/1.1
+Host: 127.0.0.1:5000
+User-Agent: SSRFmap-PUT-JSON-Example
+Accept: application/json
+Content-Type: application/json
+Content-Length: 30
+Connection: close
+
+{"url": "http://example.com"}

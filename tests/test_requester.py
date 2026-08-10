@@ -254,6 +254,26 @@ def test_put_form_preserves_context_around_fuzz_marker(tmp_path):
     assert requester.data["url"] == "test;*FUZZ*;end"
 
 
+def test_put_json_serializes_injected_url(tmp_path):
+    path = write_request(
+        tmp_path,
+        "PUT /fetch HTTP/1.1\nHost: example.test\nContent-Type: application/json\n\n"
+        '{"url": "http://example.com", "keep": true}',
+    )
+    requester = Requester(path, None, False, None)
+    response = Mock()
+
+    with patch("core.requester.requests.put", return_value=response) as request_put:
+        result = requester.do_request("url", "file:///etc/issue")
+
+    assert result is response
+    assert json.loads(request_put.call_args.kwargs["data"]) == {
+        "url": "file:///etc/issue",
+        "keep": True,
+    }
+    assert requester.data == {"url": "http://example.com", "keep": True}
+
+
 def test_json_post_serializes_injected_data(tmp_path):
     path = write_request(
         tmp_path,

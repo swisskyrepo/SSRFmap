@@ -76,13 +76,21 @@ def ssrf6():
     return content
 
 
-# curl -X PUT -d 'vulnparam=test;http://example.com' http://127.0.0.1:5000/ssrf7
+# curl -X PUT -d 'url=test;http://example.com' http://127.0.0.1:5000/ssrf7
 @app.route("/ssrf7", methods=["PUT"])
 def ssrf7():
     # The prefix represents application-specific syntax that must remain intact.
     value = request.form.get("url", "")
     _prefix, separator, url = value.partition(";")
     content = command(f"curl {url if separator else value}")
+    return content
+
+
+# curl -X PUT -H 'Content-Type: application/json' -d '{"url":"http://example.com"}' http://127.0.0.1:5000/ssrf8
+@app.route("/ssrf8", methods=["PUT"])
+def ssrf8():
+    data = request.get_json()
+    content = command(f"curl {data.get('url')}")
     return content
 
 

